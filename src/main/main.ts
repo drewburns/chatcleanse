@@ -38,21 +38,27 @@ let mainWindow: BrowserWindow | null = null;
 
 ipcMain.on('ipc-example', async (event, arg) => {
   const msgTemplate = (pingPong: string) => `IPC test: ${pingPong}`;
-  console.log(msgTemplate(arg));
   event.reply('ipc-example', msgTemplate('pong'));
 });
 
 ipcMain.on('getProblemMessages', async (event, arg) => {
   const resolved = store.get('resolved');
-  console.log('resolved', resolved);
+  // console.log('resolved', resolved);
+  const desktopPath = app.getPath('desktop');
   const allMessages = store.get('problemMessages');
   if (!resolved) {
-    return event.reply('problemMessages', allMessages);
+    return event.reply('problemMessages', {
+      messages: allMessages,
+      desktopPath,
+    });
   }
   const filteredResolve = allMessages.filter(
     (m) => !resolved.includes(m.timestamp_ms)
   );
-  return event.reply('problemMessages', filteredResolve);
+  return event.reply('problemMessages', {
+    messages: filteredResolve,
+    desktopPath,
+  });
 });
 
 ipcMain.on('resolveMessage', async (event, timestamp) => {
@@ -150,7 +156,6 @@ ipcMain.on('file-drop', async (event, arg) => {
     for (const x in data.messages) {
       const m = data.messages[x];
       if (m.content && filter.isProfane(m.content)) {
-        console.log(getContext(data.messages, parseInt(x)));
         problemMessages.push({
           ...m,
           username,

@@ -13,6 +13,7 @@ import { Button, Card, Grid } from '@mui/material';
 export default function Results() {
   const navigation = useNavigate();
   const [problemMessages, setProblemMessages] = React.useState([]);
+  const [desktopPath, setDesktopPath] = React.useState('');
   React.useEffect(() => {
     window.electron.ipcRenderer.sendMessage('getProblemMessages');
     window.electron.ipcRenderer.on('go-to-page', (page) => {
@@ -24,7 +25,8 @@ export default function Results() {
       }
     });
     window.electron.ipcRenderer.on('problemMessages', (data) => {
-      setProblemMessages(data);
+      setProblemMessages(data.messages);
+      setDesktopPath(data.desktopPath);
     });
   }, []);
 
@@ -50,7 +52,7 @@ export default function Results() {
         {photos.map((photo) => (
           <img
             style={{ height: 150 }}
-            src={`file:///Users/andrewburns/Desktop/chatcleanse_data/${photo.uri}`}
+            src={`file://${desktopPath}/chatcleanse_data/${photo.uri}`}
           />
         ))}
       </div>
@@ -63,14 +65,10 @@ export default function Results() {
         {audioFiles.map((audio) => (
           <audio controls>
             <source
-              src={`file:///Users/andrewburns/Desktop/chatcleanse_data/${audio.uri}`}
+              src={`file://${desktopPath}/chatcleanse_data/${audio.uri}`}
               type="audio/mp4"
             />
           </audio>
-          //   <audio
-          //     controls
-          //     src={`file://Users/andrewburns/Desktop/chatcleanse_data/${audio.uri}`}
-          //   />
         ))}
       </div>
     );
