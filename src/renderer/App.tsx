@@ -1,17 +1,33 @@
-import { MemoryRouter as Router, Routes, Route } from 'react-router-dom';
+/* eslint-disable promise/param-names */
+import {
+  MemoryRouter as Router,
+  Routes,
+  Route,
+  useNavigate,
+} from 'react-router-dom';
 import icon from '../../assets/icon.svg';
 import { useDropzone } from 'react-dropzone';
 
 import './App.css';
 import React from 'react';
+import { Card, Grid } from '@mui/material';
+import Results from './Results';
 
 const Hello = () => {
   const { acceptedFiles, getRootProps, getInputProps } = useDropzone();
   const [problemMessages, setProblemMessages] = React.useState([]);
+  const navigation = useNavigate();
+
   React.useEffect(() => {
     window.electron.ipcRenderer.on('problem-messages', (data) => {
       console.log(data);
-      setProblemMessages(data);
+      // setProblemMessages(data);
+      if (data[0]) {
+        navigation('loading');
+      }
+    });
+    window.electron.ipcRenderer.on('go-to-page', (page) => {
+      navigation(page);
     });
   }, []);
 
@@ -26,38 +42,65 @@ const Hello = () => {
     </li>
   ));
   return (
-    <div>
-      {' '}
-      <section>
-        <div
-          {...getRootProps()}
-          style={{ height: 100, border: '1px dashed black', cursor: 'pointer' }}
-        >
-          <input {...getInputProps()} />
-          <p style={{ marginTop: 30, padding: 10 }}>
-            Drag 'n' drop some files here, or click to select files
-          </p>
-        </div>
-        <aside>
-          <h4>Files</h4>
-          <ul>Number: {files.length}</ul>
-        </aside>
-      </section>
-      {problemMessages.length > 0 && (
-        <div>
-          <ul style={{ listStyleType: 'none' }}>
-            {problemMessages.map((m) => (
-              <div style={{ border: '1px solid #d3d3d3' }}>
-                <h3>Chat: {m.title}</h3>
-                <p>{m.content}</p>
-                <i>Sent at {new Date(m.timestamp_ms).toLocaleDateString()}</i>
-              </div>
-            ))}
-          </ul>
-        </div>
-      )}
-    </div>
+    <Grid container>
+      <Grid item xs={3} />
+      <Grid item xs={6}>
+        <Card className="helloCard">
+          <h2 style={{ textAlign: 'center' }}>Chat Cleanse</h2>
+          <div>
+            <h4>Take action on old texts and more</h4>
+            <p>
+              Scan through thousands of DM's to find messages you want to delete
+            </p>
+          </div>
+          <div>
+            <h4>Paid, meaning totally private</h4>
+            <p>
+              Your data is yours. By charging to use ChatCleanse, we make sure
+              privacy is always at the forefront
+            </p>
+          </div>
+          <div>
+            <h4>Have piece of mind</h4>
+            <p>Freshen up your texts and protect your reputation</p>
+          </div>
+        </Card>
+        <Card className="helloCard" style={{ textAlign: 'center' }}>
+          <h3>Get started with your free message scan</h3>
+          <p>Drag in your export from Instagram</p>
+          <section>
+            <div
+              {...getRootProps()}
+              style={{
+                height: 100,
+                border: '1px dashed black',
+                cursor: 'pointer',
+              }}
+            >
+              <input {...getInputProps()} />
+              <p style={{ marginTop: 30, padding: 10 }}>
+                Drag your folder here!
+              </p>
+            </div>
+          </section>
+        </Card>
+      </Grid>
+    </Grid>
   );
+};
+
+const Loading = () => {
+  const navigation = useNavigate();
+
+  const delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
+  React.useEffect(() => {
+    (async () => {
+      await delay(2000);
+      navigation('/results');
+    })();
+  }, []);
+
+  return <h3>Loading...</h3>;
 };
 
 export default function App() {
@@ -65,7 +108,25 @@ export default function App() {
     <Router>
       <Routes>
         <Route path="/" element={<Hello />} />
+        <Route path="/loading" element={<Loading />} />
+        <Route path="/results" element={<Results />} />
       </Routes>
     </Router>
   );
 }
+
+// {problemMessages.length > 0 && (
+//   <div>
+//     <ul style={{ listStyleType: 'none' }}>
+//       {problemMessages.map((m) => (
+//         <div style={{ border: '1px solid #d3d3d3' }}>
+//           <h3>Chat: {m.title}</h3>
+//           <p>{m.content}</p>
+//           <i>
+//             Sent at {new Date(m.timestamp_ms).toLocaleDateString()}
+//           </i>
+//         </div>
+//       ))}
+//     </ul>
+//   </div>
+// )}

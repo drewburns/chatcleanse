@@ -3,20 +3,10 @@
  *        See https://github.com/webpack-contrib/sass-loader#imports
  */
 body {
-  position: relative;
-  color: white;
+  color: black;
   height: 100vh;
-  background: linear-gradient(
-    200.96deg,
-    #fedc2a -29.09%,
-    #dd5789 51.77%,
-    #7a2c9e 129.35%
-  );
+  background-color: #F1F1F1;
   font-family: sans-serif;
-  overflow-y: hidden;
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 
 button {
@@ -59,4 +49,18 @@ a:hover {
   justify-content: center;
   align-items: center;
   margin: 20px 0;
+}
+
+.helloCard {
+  padding: 10px;
+  margin-top: 20px;
+}
+
+.problemDot {
+  height: 20px;
+  width: 20px;
+  margin-top: 23px;
+  margin-left: 7px;
+  background-color: #5BC1F6;
+  border-radius: 100%;
 }

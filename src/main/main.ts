@@ -1,3 +1,5 @@
+/* eslint-disable guard-for-in */
+/* eslint-disable no-restricted-syntax */
 /* eslint global-require: off, no-console: off, promise/always-return: off */
 
 /**
@@ -16,7 +18,13 @@ import log from 'electron-log';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
 var Filter = require('bad-words');
+const fse = require('fs-extra');
+
 let fs = require('fs');
+
+const Store = require('electron-store');
+
+const store = new Store();
 
 class AppUpdater {
   constructor() {
@@ -34,7 +42,99 @@ ipcMain.on('ipc-example', async (event, arg) => {
   event.reply('ipc-example', msgTemplate('pong'));
 });
 
+ipcMain.on('getProblemMessages', async (event, arg) => {
+  const resolved = store.get('resolved');
+  console.log('resolved', resolved);
+  const allMessages = store.get('problemMessages');
+  if (!resolved) {
+    return event.reply('problemMessages', allMessages);
+  }
+  const filteredResolve = allMessages.filter(
+    (m) => !resolved.includes(m.timestamp_ms)
+  );
+  return event.reply('problemMessages', filteredResolve);
+});
+
+ipcMain.on('resolveMessage', async (event, timestamp) => {
+  const resolved = store.get('resolved');
+  if (resolved) {
+    store.set('resolved', [...resolved, timestamp]);
+  } else {
+    store.set('resolved', [timestamp]);
+  }
+});
+
+ipcMain.on('reset', async (event, arg) => {
+  store.delete('problemMessages');
+  store.delete('resolved');
+  // ipcMain.sendMe.reply('go-to-page', '');
+  mainWindow?.webContents.send('go-to-page', '');
+});
+
+const getContext = (messages: any[], problemMessageIndex: number) => {
+  if (messages.length === 1) {
+    return [];
+  }
+  if (messages.length <= 4) {
+    return messages.splice(problemMessageIndex, 1);
+  }
+  if (problemMessageIndex <= 1) {
+    return messages.slice(0, 4);
+  }
+
+  if (problemMessageIndex === messages.length - 1) {
+    return messages.slice(-4);
+  }
+  return messages.slice(problemMessageIndex - 2, problemMessageIndex + 2);
+};
+
+const mode = (a: string[]) => {
+  a = a.slice().sort((x, y) => x - y);
+
+  var bestStreak = 1;
+  var bestElem = a[0];
+  var currentStreak = 1;
+  var currentElem = a[0];
+
+  for (let i = 1; i < a.length; i++) {
+    if (a[i - 1] !== a[i]) {
+      if (currentStreak > bestStreak) {
+        bestStreak = currentStreak;
+        bestElem = currentElem;
+      }
+
+      currentStreak = 0;
+      currentElem = a[i];
+    }
+
+    currentStreak++;
+  }
+
+  return currentStreak > bestStreak ? currentElem : bestElem;
+};
+const getUserName = (files: string[]) => {
+  const usernameCounterArr: string[] = [];
+  files.forEach((f) => {
+    const data = JSON.parse(fs.readFileSync(f, 'utf8'));
+    for (const x in data.messages) {
+      const m = data.messages[x];
+      usernameCounterArr.push(m.sender_name);
+    }
+  });
+  return mode(usernameCounterArr);
+};
 ipcMain.on('file-drop', async (event, arg) => {
+  const desktopPath = app.getPath('desktop') + '/chatcleanse_data';
+  if (!fs.existsSync(desktopPath)) {
+    fs.mkdirSync(desktopPath, { recursive: true });
+  }
+
+  arg.forEach((file) => {
+    const newPath = desktopPath + '/' + file.split('/').slice(5).join('/');
+    fse.copy(file, newPath);
+    // fs.createReadStream(file).pipe(fs.createWriteStream(newPath));
+  });
+
   const files = arg.filter(
     (x) =>
       x.includes('/messages/inbox/') &&
@@ -44,19 +144,27 @@ ipcMain.on('file-drop', async (event, arg) => {
   // const data = fs.readFileSync(arg[0], 'utf8');
   const problemMessages = [];
   const filter = new Filter();
+  const username = getUserName(files);
   files.forEach((f) => {
-    console.log('-----');
     const data = JSON.parse(fs.readFileSync(f, 'utf8'));
-    data.messages.forEach((m) => {
+    for (const x in data.messages) {
+      const m = data.messages[x];
       if (m.content && filter.isProfane(m.content)) {
+        console.log(getContext(data.messages, parseInt(x)));
         problemMessages.push({
           ...m,
+          username,
           participants: data.participants,
           title: data.title,
+          context: getContext(data.messages, parseInt(x)),
         });
       }
-    });
+    }
   });
+  if (arg.length > 0) {
+    store.set('hasUploaded', true);
+    store.set('problemMessages', problemMessages);
+  }
   // console.log(problemMessages);
   event.reply('problem-messages', problemMessages);
 });
@@ -105,6 +213,7 @@ const createWindow = async () => {
     height: 728,
     icon: getAssetPath('icon.png'),
     webPreferences: {
+      webSecurity: false,
       preload: app.isPackaged
         ? path.join(__dirname, 'preload.js')
         : path.join(__dirname, '../../.erb/dll/preload.js'),
@@ -121,6 +230,12 @@ const createWindow = async () => {
       mainWindow.minimize();
     } else {
       mainWindow.show();
+    }
+    // store.delete('problemMessages');
+    const problemMessages = store.get('problemMessages');
+    console.log(problemMessages);
+    if (problemMessages) {
+      mainWindow.webContents.send('go-to-page', 'results');
     }
   });
 
