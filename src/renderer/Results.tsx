@@ -81,6 +81,7 @@ export default function Results() {
         <Grid item xs={8}>
           <h3>Results</h3>
           <h3>{problemMessages.length} issues found</h3>
+          <Button onClick={() => reset()}>Upload new (restart)</Button>
           {problemMessages.map((message) => (
             <Card style={{ marginTop: 20 }}>
               <h4>{message.title}</h4>
@@ -128,7 +129,6 @@ export default function Results() {
               </Button>
             </Card>
           ))}
-          <Button onClick={() => reset()}>Restart</Button>
         </Grid>
       </Grid>
     </div>

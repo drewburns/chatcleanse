@@ -149,7 +149,11 @@ ipcMain.on('file-drop', async (event, arg) => {
   );
   // const data = fs.readFileSync(arg[0], 'utf8');
   const problemMessages = [];
-  const filter = new Filter();
+  const filter = new Filter(); // bad words filter
+  // const newBadWords = ['some', 'bad', 'word'];
+  // filter.addWords(...newBadWords);
+
+  
   const username = getUserName(files);
   files.forEach((f) => {
     const data = JSON.parse(fs.readFileSync(f, 'utf8'));
