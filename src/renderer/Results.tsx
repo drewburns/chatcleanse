@@ -76,22 +76,36 @@ export default function Results() {
 
   return (
     <div>
-      <Grid container>
+      <div
+        container
+        style={{
+          display:"flex",
+          justifyContent: 'center',
+        }}
+      >
         <Grid item xs={2} />
-        <Grid item xs={8}>
+        <div
+          item
+          xs={8}
+          style={{
+            width: 680
+          }}
+        >
+
           <h3>Results</h3>
           <h3>{problemMessages.length} issues found</h3>
           <Button onClick={() => reset()}>Upload new (restart)</Button>
           {problemMessages.map((message) => (
-            <Card style={{ marginTop: 20 }}>
+            <Card style={{ marginTop: 20, paddingLeft: 20, paddingBottom: 20 }}>
               <h4>{message.title}</h4>
               <p>{new Date(message.timestamp_ms).toLocaleDateString()}</p>
               {orderAndCleanMessages(message).map((cm) => (
-                <Grid container>
+                <Grid container
+                style={{ paddingRight: 10}}>
                   {cm.sender_name === message.username && (
                     <Grid item xs={6} md={5} />
                   )}
-                  <Grid
+                  <div
                     item
                     xs={6}
                     md={5}
@@ -104,24 +118,31 @@ export default function Results() {
                         cm.sender_name === message.username ? 'white' : 'black',
                       textAlign:
                         cm.sender_name === message.username ? 'right' : 'left',
-                      paddingRight: 20,
-                      paddingLeft: 20,
+                      paddingRight: 15,
+                      paddingLeft: 15,
+                      marginLeft:
+                        cm.sender_name === message.username ? 'auto' : 0,
                       marginTop: 10,
+                      marginRight:
+                        cm.sender_name === message.username ? 10 : null,
+                      marginRight:
+                        cm.timestamp_ms !== message.timestamp_ms && cm.sender_name === message.username && 30,
                       borderRadius: 20,
                       marginBottom: 10,
+                      maxWidth: 300,
                     }}
                   >
                     <p>{cm.content}</p>
                     {cm.photos && displayImages(cm.photos)}
                     {cm.audio_files && displayAudio(cm.audio_files)}
-                  </Grid>
+                  </div>
                   {cm.timestamp_ms === message.timestamp_ms && (
                     <div className="problemDot" />
                   )}
                 </Grid>
               ))}
               <Button
-                style={{ float: 'right', marginTop: 20 }}
+                style={{ float: 'right', marginTop: 20, marginRight: 20 }}
                 variant="contained"
                 onClick={() => resolveMessage(message.timestamp_ms)}
               >
@@ -129,8 +150,8 @@ export default function Results() {
               </Button>
             </Card>
           ))}
-        </Grid>
-      </Grid>
+        </div>
+      </div>
     </div>
   );
 }
