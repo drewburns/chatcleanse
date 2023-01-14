@@ -148,12 +148,11 @@ ipcMain.on('file-drop', async (event, arg) => {
       !x.includes('secret_conversations')
   );
   // const data = fs.readFileSync(arg[0], 'utf8');
-  const problemMessages = [];
+  let problemMessages = [];
   const filter = new Filter(); // bad words filter
   // const newBadWords = ['some', 'bad', 'word'];
   // filter.addWords(...newBadWords);
 
-  
   const username = getUserName(files);
   files.forEach((f) => {
     const data = JSON.parse(fs.readFileSync(f, 'utf8'));
@@ -170,6 +169,10 @@ ipcMain.on('file-drop', async (event, arg) => {
       }
     }
   });
+  problemMessages = problemMessages.sort(
+    (a, b) => a.timestamp_ms - b.timestamp_ms
+  );
+
   if (arg.length > 0) {
     store.set('hasUploaded', true);
     store.set('problemMessages', problemMessages);
