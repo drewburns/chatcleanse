@@ -96,7 +96,7 @@ export default function Results() {
           <Button onClick={() => reset()}>Upload new (restart)</Button>
           {problemMessages.map((message) => (
             <Card style={{ marginTop: 20, paddingLeft: 20, paddingBottom: 20 }}>
-              <h4>{message.title}</h4>
+              <h4>{decodeURIComponent(escape(message.title))}</h4>
               <p>{new Date(message.timestamp_ms).toLocaleDateString()}</p>
               {orderAndCleanMessages(message).map((cm) => (
                 <Grid container style={{ paddingRight: 10 }}>
