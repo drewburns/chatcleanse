@@ -79,7 +79,7 @@ export default function Results() {
       <div
         container
         style={{
-          display:"flex",
+          display: 'flex',
           justifyContent: 'center',
         }}
       >
@@ -88,10 +88,9 @@ export default function Results() {
           item
           xs={8}
           style={{
-            width: 680
+            width: 680,
           }}
         >
-
           <h3>Results</h3>
           <h3>{problemMessages.length} issues found</h3>
           <Button onClick={() => reset()}>Upload new (restart)</Button>
@@ -100,8 +99,7 @@ export default function Results() {
               <h4>{message.title}</h4>
               <p>{new Date(message.timestamp_ms).toLocaleDateString()}</p>
               {orderAndCleanMessages(message).map((cm) => (
-                <Grid container
-                style={{ paddingRight: 10}}>
+                <Grid container style={{ paddingRight: 10 }}>
                   {cm.sender_name === message.username && (
                     <Grid item xs={6} md={5} />
                   )}
@@ -126,13 +124,17 @@ export default function Results() {
                       marginRight:
                         cm.sender_name === message.username ? 10 : null,
                       marginRight:
-                        cm.timestamp_ms !== message.timestamp_ms && cm.sender_name === message.username && 30,
+                        cm.timestamp_ms !== message.timestamp_ms &&
+                        cm.sender_name === message.username &&
+                        30,
                       borderRadius: 20,
                       marginBottom: 10,
                       maxWidth: 300,
                     }}
                   >
-                    <p>{cm.content}</p>
+                    {cm.content && (
+                      <p>{decodeURIComponent(escape(cm.content))}</p>
+                    )}
                     {cm.photos && displayImages(cm.photos)}
                     {cm.audio_files && displayAudio(cm.audio_files)}
                   </div>
