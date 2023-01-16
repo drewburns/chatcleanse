@@ -10,7 +10,7 @@ import { useDropzone } from 'react-dropzone';
 
 import './App.css';
 import React from 'react';
-import { Card, Grid } from '@mui/material';
+import { Card, Grid, LinearProgress } from '@mui/material';
 import Results from './Results';
 
 const Hello = () => {
@@ -100,7 +100,12 @@ const Loading = () => {
     })();
   }, []);
 
-  return <h3>Loading...</h3>;
+  return (
+    <div>
+      <h3>Loading...</h3>
+      <LinearProgress />
+    </div>
+  );
 };
 
 export default function App() {
