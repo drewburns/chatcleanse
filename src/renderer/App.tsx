@@ -34,6 +34,9 @@ const Hello = () => {
   React.useEffect(() => {
     const filePaths = acceptedFiles.map((f) => f.path);
     window.electron.ipcRenderer.sendMessage('file-drop', filePaths);
+    if (acceptedFiles.length > 0) {
+      navigation('loading');
+    }
   }, [acceptedFiles]);
 
   const files = acceptedFiles.map((file) => (
