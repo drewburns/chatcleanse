@@ -34,7 +34,7 @@ const Hello = () => {
   React.useEffect(() => {
     const filePaths = acceptedFiles.map((f) => f.path);
     window.electron.ipcRenderer.sendMessage('file-drop', filePaths);
-    if (acceptedFiles.length > 0) {
+    if (acceptedFiles && acceptedFiles.length > 0) {
       navigation('loading');
     }
   }, [acceptedFiles]);
@@ -98,8 +98,8 @@ const Loading = () => {
   const delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
   React.useEffect(() => {
     (async () => {
-      await delay(2000);
-      navigation('/results');
+      // await delay(2000);
+      // navigation('/results');
     })();
   }, []);
 

@@ -179,6 +179,9 @@ ipcMain.on('file-drop', async (event, arg) => {
   }
   // console.log(problemMessages);
   event.reply('problem-messages', problemMessages);
+  if (problemMessages.length !== 0) {
+    mainWindow.webContents.send('go-to-page', 'results');
+  }
 });
 
 if (process.env.NODE_ENV === 'production') {
