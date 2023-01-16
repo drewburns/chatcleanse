@@ -115,7 +115,7 @@ export default function Results() {
                       color:
                         cm.sender_name === message.username ? 'white' : 'black',
                       textAlign:
-                        cm.sender_name === message.username ? 'right' : 'left',
+                        cm.sender_name === message.username ? 'left' : 'left',
                       paddingRight: 15,
                       paddingLeft: 15,
                       marginLeft:
