@@ -150,8 +150,10 @@ ipcMain.on('file-drop', async (event, arg) => {
   // const data = fs.readFileSync(arg[0], 'utf8');
   let problemMessages = [];
   const filter = new Filter(); // bad words filter
-  // const newBadWords = ['some', 'bad', 'word'];
-  // filter.addWords(...newBadWords);
+  const newBadWords = ['me hard', 'so hard'];
+  let removeWords = ['god', 'damn', 'shit', 'hell', 'pissed', ];
+  filter.removeWords(...removeWords);
+  filter.addWords(...newBadWords);
 
   const username = getUserName(files);
   files.forEach((f) => {
