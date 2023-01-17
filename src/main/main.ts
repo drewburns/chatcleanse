@@ -151,7 +151,7 @@ ipcMain.on('file-drop', async (event, arg) => {
   let problemMessages = [];
   const filter = new Filter(); // bad words filter
   const newBadWords = ['me hard', 'so hard'];
-  let removeWords = ['god', 'damn', 'shit', 'hell', 'pissed', ];
+  let removeWords = ['god', 'damn', 'shit', 'hell', 'pissed'];
   filter.removeWords(...removeWords);
   filter.addWords(...newBadWords);
 
@@ -167,6 +167,7 @@ ipcMain.on('file-drop', async (event, arg) => {
           participants: data.participants,
           title: data.title,
           context: getContext(data.messages, parseInt(x)),
+          thread_path: data.thread_path,
         });
       }
     }

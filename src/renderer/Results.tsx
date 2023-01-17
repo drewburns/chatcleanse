@@ -14,6 +14,7 @@ export default function Results() {
   const navigation = useNavigate();
   const [problemMessages, setProblemMessages] = React.useState([]);
   const [desktopPath, setDesktopPath] = React.useState('');
+  const [threadPath, setThreadPath] = React.useState('');
   React.useEffect(() => {
     window.electron.ipcRenderer.sendMessage('getProblemMessages');
     window.electron.ipcRenderer.on('go-to-page', (page) => {
@@ -74,6 +75,17 @@ export default function Results() {
     );
   };
 
+  const filterUserThread = (thread_path: string) => {
+    setThreadPath(thread_path);
+  };
+
+  const getProblemFiltered = () => {
+    if (threadPath) {
+      return problemMessages.filter((m) => m.thread_path === threadPath);
+    }
+    return problemMessages;
+  };
+
   return (
     <div>
       <div
@@ -94,9 +106,20 @@ export default function Results() {
           <h3>Results</h3>
           <h3>{problemMessages.length} issues found</h3>
           <Button onClick={() => reset()}>Upload new (restart)</Button>
-          {problemMessages.map((message) => (
+          <br />
+          {threadPath && (
+            <Button onClick={() => setThreadPath('')}>
+              Clear filter
+            </Button>
+          )}
+          {getProblemFiltered().map((message) => (
             <Card style={{ marginTop: 20, paddingLeft: 20, paddingBottom: 20 }}>
-              <h4>{decodeURIComponent(escape(message.title))}</h4>
+              <h4
+                onClick={() => filterUserThread(message.thread_path)}
+                style={{ cursor: 'pointer' }}
+              >
+                {decodeURIComponent(escape(message.title))}
+              </h4>
               <p>{new Date(message.timestamp_ms).toLocaleDateString()}</p>
               {orderAndCleanMessages(message).map((cm) => (
                 <Grid container style={{ paddingRight: 10 }}>
