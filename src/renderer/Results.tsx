@@ -93,6 +93,8 @@ export default function Results() {
         style={{
           display: 'flex',
           justifyContent: 'center',
+          backgroundColor: '#F6F6F6'
+
         }}
       >
         <Grid item xs={2} />
@@ -103,24 +105,84 @@ export default function Results() {
             width: 680,
           }}
         >
-          <h3>Results</h3>
-          <h3>{problemMessages.length} issues found</h3>
-          <Button onClick={() => reset()}>Upload new (restart)</Button>
+          <div
+          style={{
+            display: 'flex',
+            width: '100%',
+            flexDirection: 'column',
+            position: 'sticky',
+            top: 0,
+            backgroundColor: '#F6F6F6',
+            paddingBottom: 20
+          }}>
+            <div style={{
+              display: 'flex',
+              width: '100%',
+              justifyContent: 'space-between',
+              alignItems: 'center'
+            }}>
+            <div>
+              <p style={{marginBottom: 0, fontSize: 20, fontWeight: 'bold'}}>{problemMessages.length} issues found</p>
+              <p style={{marginBottom: 10, marginTop: 10}}>Instagram</p>
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'row'}}>
+              <div style={{ cursor: 'pointer', display: 'flex', width: 95, height: 40, marginLeft: 10, alignItems: 'center', justifyContent: 'center', border: '1px solid black', borderRadius: 5}}>
+              <p>Add Words</p>
+              </div>
+              <div style={{ cursor: 'pointer', display: 'flex', width: 95, height: 40, marginLeft: 10, alignItems: 'center', justifyContent: 'center', border: '1px solid black', borderRadius: 5}}>
+                <p>Omit Words</p>
+              </div>
+              <div onClick={() => reset()}
+                   style={{ cursor: 'pointer', display: 'flex', width: 95, height: 40, marginLeft: 10, alignItems: 'center', justifyContent: 'center', border: '1px solid black', borderRadius: 5}}>
+              <p>New Scan</p>
+              </div>
+            </div>
+          </div>
+          <div style={{ display: 'flex', height: 50, width: '100%', backgroundColor: 'white', borderRadius: 10, flexDirection: 'row', alignItems: 'center', border: '.25px solid black', }}>
+            <div style={{ width: '100%', height: 50, padding: 10}}>
+              <p style={{ marginBottom: 0, color: 'gray'}}>Search your messages for a phrase</p>
+            </div>
+            <div style={{ display: 'flex', width: 130, height: 50, marginLeft: 10, alignItems: 'center', justifyContent: 'center', backgroundColor: 'black', borderRadius: 10, borderColor: 'black', borderWidth: 1}}>
+              <p style={{ color: 'white' }}>Search</p>
+            </div>
+          </div>
+          </div>
+          {/* <Button onClick={() => reset()}>Upload new (restart)</Button> */}
           <br />
           {threadPath && (
-            <Button onClick={() => setThreadPath('')}>
-              Clear filter
-            </Button>
+            <div
+              style={{ cursor: 'pointer', display: 'flex', marginTop: 20, height: 43, width: 143, marginRight: 20, backgroundColor: 'black', color: 'white', borderRadius: 3, marginBottom: 20,  alignItems: 'center', justifyContent: 'center' }}
+              onClick={() => setThreadPath('')}>
+              Back
+            </div>
           )}
           {getProblemFiltered().map((message) => (
-            <Card style={{ marginTop: 20, paddingLeft: 20, paddingBottom: 20 }}>
-              <h4
-                onClick={() => filterUserThread(message.thread_path)}
-                style={{ cursor: 'pointer' }}
-              >
-                {decodeURIComponent(escape(message.title))}
-              </h4>
-              <p>{new Date(message.timestamp_ms).toLocaleDateString()}</p>
+            <Card style={{ marginTop: 10, marginRight: 3, marginLeft: 3,  paddingLeft: 20, paddingBottom: 20 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', paddingRight: 20}}>
+                <div style={{cursor: 'pointer'}} onClick={() => filterUserThread(message.thread_path)}>
+                  <p
+                    style={{
+                      fontWeight: 'bold',
+                      marginBottom: 0,
+                      fontSize: 19
+                  }}
+                  >
+                    {decodeURIComponent(escape(message.title))}
+                  </p>
+                  <p style={{
+                    marginTop: 4,
+                    fontSize: 12,
+                    color: '#999999'
+                  }}>See all from sender</p>
+                </div>
+
+              <p style={{
+                paddingTop:8
+              }}>
+                {new Date(message.timestamp_ms).toLocaleDateString()}
+              </p>
+              </div>
+
               {orderAndCleanMessages(message).map((cm) => (
                 <Grid container style={{ paddingRight: 10 }}>
                   {cm.sender_name === message.username && (
@@ -166,13 +228,13 @@ export default function Results() {
                   )}
                 </Grid>
               ))}
-              <Button
-                style={{ float: 'right', marginTop: 20, marginRight: 20 }}
+              <div
+                style={{ cursor: 'pointer', display: 'flex', float: 'right', marginTop: 20, height: 43, width: 143, marginRight: 20, backgroundColor: 'black', color: 'white', borderRadius: 3, alignItems: 'center', justifyContent: 'center' }}
                 variant="contained"
                 onClick={() => resolveMessage(message.timestamp_ms)}
               >
-                Mark resolved
-              </Button>
+                Mark Resolved
+              </div>
             </Card>
           ))}
         </div>
