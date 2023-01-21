@@ -15,6 +15,7 @@ export default function Results() {
   const [problemMessages, setProblemMessages] = React.useState([]);
   const [desktopPath, setDesktopPath] = React.useState('');
   const [threadPath, setThreadPath] = React.useState('');
+  const [threadChatName, setThreadChatName] = React.useState('');
   React.useEffect(() => {
     window.electron.ipcRenderer.sendMessage('getProblemMessages');
     window.electron.ipcRenderer.on('go-to-page', (page) => {
@@ -85,6 +86,10 @@ export default function Results() {
     }
     return problemMessages;
   };
+  const clearThreadPath = () => {
+    setThreadChatName('');
+    setThreadPath('');
+  };
 
   return (
     <div>
@@ -108,14 +113,17 @@ export default function Results() {
           <Button onClick={() => reset()}>Upload new (restart)</Button>
           <br />
           {threadPath && (
-            <Button onClick={() => setThreadPath('')}>
-              Clear filter
+            <Button onClick={() => clearThreadPath()}>
+              Clear filter for {threadChatName}
             </Button>
           )}
           {getProblemFiltered().map((message) => (
             <Card style={{ marginTop: 20, paddingLeft: 20, paddingBottom: 20 }}>
               <h4
-                onClick={() => filterUserThread(message.thread_path)}
+                onClick={() => {
+                  filterUserThread(message.thread_path);
+                  setThreadChatName(message.title);
+                }}
                 style={{ cursor: 'pointer' }}
               >
                 {decodeURIComponent(escape(message.title))}
