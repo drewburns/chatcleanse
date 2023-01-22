@@ -251,7 +251,6 @@ const createWindow = async () => {
     }
     // store.delete('problemMessages');
     const problemMessages = store.get('problemMessages');
-    console.log(problemMessages);
     if (problemMessages) {
       mainWindow.webContents.send('go-to-page', 'results');
     }
