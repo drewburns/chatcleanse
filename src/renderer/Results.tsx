@@ -8,13 +8,16 @@ import {
 
 import './App.css';
 import React from 'react';
-import { Button, Card, Grid } from '@mui/material';
+import { Box, Button, Card, Grid, Modal, Typography } from '@mui/material';
 
 export default function Results() {
   const navigation = useNavigate();
   const [problemMessages, setProblemMessages] = React.useState([]);
   const [desktopPath, setDesktopPath] = React.useState('');
   const [threadPath, setThreadPath] = React.useState('');
+  const [showAddWords, setShowAddWords] = React.useState(false);
+  const [showOmitWords, setShowOmitWords] = React.useState(false);
+
   React.useEffect(() => {
     window.electron.ipcRenderer.sendMessage('getProblemMessages');
     window.electron.ipcRenderer.on('go-to-page', (page) => {
@@ -126,10 +129,12 @@ export default function Results() {
               <p style={{marginBottom: 10, marginTop: 10}}>Instagram</p>
             </div>
             <div style={{ display: 'flex', flexDirection: 'row'}}>
-              <div style={{ cursor: 'pointer', display: 'flex', width: 95, height: 40, marginLeft: 10, alignItems: 'center', justifyContent: 'center', border: '1px solid black', borderRadius: 5}}>
+              <div style={{ cursor: 'pointer', display: 'flex', width: 95, height: 40, marginLeft: 10, alignItems: 'center', justifyContent: 'center', border: '1px solid black', borderRadius: 5}}
+                   onClick={() => setShowAddWords(true)}>
               <p>Add Words</p>
               </div>
-              <div style={{ cursor: 'pointer', display: 'flex', width: 95, height: 40, marginLeft: 10, alignItems: 'center', justifyContent: 'center', border: '1px solid black', borderRadius: 5}}>
+              <div style={{ cursor: 'pointer', display: 'flex', width: 95, height: 40, marginLeft: 10, alignItems: 'center', justifyContent: 'center', border: '1px solid black', borderRadius: 5}}
+                   onClick={() => setShowOmitWords(true)}>
                 <p>Omit Words</p>
               </div>
               <div onClick={() => reset()}
@@ -150,11 +155,9 @@ export default function Results() {
           {/* <Button onClick={() => reset()}>Upload new (restart)</Button> */}
           <br />
           {threadPath && (
-            <div
-              style={{ cursor: 'pointer', display: 'flex', marginTop: 20, height: 43, width: 143, marginRight: 20, backgroundColor: 'black', color: 'white', borderRadius: 3, marginBottom: 20,  alignItems: 'center', justifyContent: 'center' }}
-              onClick={() => setThreadPath('')}>
+            <p onClick={() => setThreadPath('')} style={{cursor: 'pointer', marginTop: -10, fontWeight: 'bold'}}>
               Back
-            </div>
+            </p>
           )}
           {getProblemFiltered().map((message) => (
             <Card style={{ marginTop: 10, marginRight: 3, marginLeft: 3,  paddingLeft: 20, paddingBottom: 20 }}>
@@ -239,6 +242,64 @@ export default function Results() {
           ))}
         </div>
       </div>
+      <Modal
+        open={showAddWords}
+        onClose={() => setShowAddWords(false)}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={style.modalStyle}>
+          <Typography id="modal-modal-title" variant="h6" component="h2" style={{marginBottom: 15}}>
+            Add Words to Blocklist
+          </Typography>
+          <div style={{ display: 'flex', height: 50, width: '100%', backgroundColor: 'white', borderRadius: 10, flexDirection: 'row', alignItems: 'center', border: '.25px solid black', }}>
+            <div style={{ width: '100%', height: 50, padding: 10}}>
+              <p style={{ marginBottom: 0, color: 'gray'}}>Add a word</p>
+            </div>
+            <div style={{ display: 'flex', width: 130, height: 50, marginLeft: 10, alignItems: 'center', justifyContent: 'center', backgroundColor: 'black', borderRadius: 10, borderColor: 'black', borderWidth: 1}}>
+              <p style={{ color: 'white' }}>Add</p>
+            </div>
+          </div>
+          <p>added words show here</p>
+        </Box>
+      </Modal>
+      <Modal
+        open={showOmitWords}
+        onClose={() => setShowOmitWords(false)}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={style.modalStyle}>
+          <Typography id="modal-modal-title" variant="h6" component="h2" style={{marginBottom: 15}}>
+            Add Words to Omit
+          </Typography>
+          <div style={{ display: 'flex', height: 50, width: '100%', backgroundColor: 'white', borderRadius: 10, flexDirection: 'row', alignItems: 'center', border: '.25px solid black', }}>
+            <div style={{ width: '100%', height: 50, padding: 10}}>
+              <p style={{ marginBottom: 0, color: 'gray'}}>Add a word</p>
+            </div>
+            <div style={{ display: 'flex', width: 130, height: 50, marginLeft: 10, alignItems: 'center', justifyContent: 'center', backgroundColor: 'black', borderRadius: 10, borderColor: 'black', borderWidth: 1}}>
+              <p style={{ color: 'white' }}>Add</p>
+            </div>
+          </div>
+          <div>
+            <p>added words show here</p>
+          </div>
+        </Box>
+      </Modal>
     </div>
   );
 }
+
+const style = {
+  modalStyle: {
+    position: 'absolute' as 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 400,
+    bgcolor: 'background.paper',
+    borderRadius: 2,
+    boxShadow: 24,
+    p: 4,
+  }
+};
