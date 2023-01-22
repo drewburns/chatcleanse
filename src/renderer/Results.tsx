@@ -10,6 +10,7 @@ import './App.css';
 import React from 'react';
 
 import { Box, Card, Button, Modal, Card, Grid, Typography } from '@mui/material';
+import PersonIcon from '@mui/icons-material/Person';
 // import { Box, Card } from '@chakra-ui/react';
 
 export default function Results() {
@@ -143,8 +144,8 @@ export default function Results() {
                    style={{ cursor: 'pointer', display: 'flex', width: 95, height: 40, marginLeft: 10, alignItems: 'center', justifyContent: 'center', border: '1px solid black', borderRadius: 5}}>
               <p>New Scan</p>
               </div>
-              <div style={{height:40, width: 40, borderRadius: 20, border: '1px solid black', marginLeft: 10}}>
-
+              <div style={{ cursor: 'pointer', height:40, width: 40, borderRadius: 20, border: '1px solid black', marginLeft: 10, display: "flex", alignItems: 'center', justifyContent: 'center'}}>
+                <PersonIcon style={{ height: 30, width: 30}}/>
               </div>
 
             </div>
