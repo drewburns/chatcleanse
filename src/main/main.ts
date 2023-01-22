@@ -94,6 +94,23 @@ const getContext = (messages: any[], problemMessageIndex: number) => {
   return messages.slice(problemMessageIndex - 2, problemMessageIndex + 2);
 };
 
+var walk = function (dir) {
+  var results = [];
+  var list = fs.readdirSync(dir);
+  list.forEach(function (file) {
+    file = dir + '/' + file;
+    var stat = fs.statSync(file);
+    if (stat && stat.isDirectory()) {
+      /* Recurse into a subdirectory */
+      results = results.concat(walk(file));
+    } else {
+      /* Is a file */
+      results.push(file);
+    }
+  });
+  return results;
+};
+
 const mode = (a: string[]) => {
   a = a.slice().sort((x, y) => x - y);
 
@@ -129,6 +146,45 @@ const getUserName = (files: string[]) => {
   });
   return mode(usernameCounterArr);
 };
+
+const searchAllTextsForKeyWord = (keyword: string) => {
+  const desktopPath = app.getPath('desktop') + '/chatcleanse_data';
+  const allFiles = walk(desktopPath);
+  const files = allFiles.filter(
+    (x) =>
+      x.includes('/messages/inbox/') &&
+      x.includes('.json') &&
+      !x.includes('secret_conversations')
+  );
+  const foundMessages = [];
+  const username = getUserName(files);
+  files.forEach((f) => {
+    const data = JSON.parse(fs.readFileSync(f, 'utf8'));
+    for (const x in data.messages) {
+      const m = data.messages[x];
+      if (
+        m.content &&
+        m.content.toLowerCase().indexOf(keyword.toLowerCase()) > -1
+      ) {
+        foundMessages.push({
+          ...m,
+          username,
+          participants: data.participants,
+          title: data.title,
+          context: getContext(data.messages, parseInt(x)),
+          thread_path: data.thread_path,
+        });
+      }
+    }
+  });
+  return foundMessages;
+};
+
+ipcMain.on('search-texts', async (event, arg) => {
+  const found = searchAllTextsForKeyWord(arg);
+  event.reply('search-results', found);
+});
+
 ipcMain.on('file-drop', async (event, arg) => {
   const desktopPath = app.getPath('desktop') + '/chatcleanse_data';
   if (!fs.existsSync(desktopPath)) {
