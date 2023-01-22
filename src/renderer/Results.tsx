@@ -8,7 +8,9 @@ import {
 
 import './App.css';
 import React from 'react';
-import { Box, Button, Card, Grid, Modal, Typography } from '@mui/material';
+
+import { Box, Card, Button, Modal, Card, Grid, Typography } from '@mui/material';
+// import { Box, Card } from '@chakra-ui/react';
 
 export default function Results() {
   const navigation = useNavigate();
@@ -141,6 +143,10 @@ export default function Results() {
                    style={{ cursor: 'pointer', display: 'flex', width: 95, height: 40, marginLeft: 10, alignItems: 'center', justifyContent: 'center', border: '1px solid black', borderRadius: 5}}>
               <p>New Scan</p>
               </div>
+              <div style={{height:40, width: 40, borderRadius: 20, border: '1px solid black', marginLeft: 10}}>
+
+              </div>
+
             </div>
           </div>
           <div style={{ display: 'flex', height: 50, width: '100%', backgroundColor: 'white', borderRadius: 10, flexDirection: 'row', alignItems: 'center', border: '.25px solid black', }}>
