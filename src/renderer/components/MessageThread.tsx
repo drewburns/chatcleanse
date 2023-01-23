@@ -5,13 +5,16 @@ type Props = {
   desktopPath: string;
   resolveMessage: (val: number) => void;
   isSearch: boolean;
-  filterUserThread: (val: string) => void;
+  displayModalOnboarding: () => void;
+  filterUserThread: () => void;
 };
+
+
 
 export default function MessageThread({
   message,
   resolveMessage,
-  desktopPath,
+  desktopPath, displayModalOnboarding,
   filterUserThread,
   isSearch,
 }: Props) {
@@ -21,6 +24,11 @@ export default function MessageThread({
         array.findIndex((a) => a[propertyName] === e[propertyName]) === i
     );
   }
+
+  const resolveClicked = (time) => {
+    displayModalOnboarding();
+    resolveMessage(time);
+  };
 
   const orderAndCleanMessages = (message) => {
     return unique(message.context.concat(message), 'timestamp_ms').sort(
@@ -154,7 +162,7 @@ export default function MessageThread({
             alignItems: 'center',
             justifyContent: 'center',
           }}
-          onClick={() => resolveMessage(message.timestamp_ms)}
+          onClick={() => resolveClicked(message.timestamp_ms)}
         >
           Mark Resolved
         </div>

@@ -35,6 +35,8 @@ export default function Results() {
   const [searchTerm, setSearchTerm] = React.useState('');
   const [showAddWords, setShowAddWords] = React.useState(false);
   const [showOmitWords, setShowOmitWords] = React.useState(false);
+  const [showMarkResolve, setShowMarkResolve] = React.useState(false);
+  const [onboardingShown, setOnboardingShown] = React.useState(false);
   const [searchMessages, setSearchMessages] = React.useState([]);
   const [searchOn, setSearchOn] = React.useState(false);
 
@@ -76,6 +78,11 @@ export default function Results() {
   // .filter((x) => x.content)
   // .map((i) => i.content.toLowerCase().indexOf(searchTerm) > -1)
   // .contains(true)
+
+  const displayModalOnboarding = () => {
+    !onboardingShown && setShowMarkResolve(true);
+    setOnboardingShown(true);
+  };
 
   const contextContainsPhrase = (context, term) => {
     const matchingContext = context.filter(
@@ -193,6 +200,7 @@ export default function Results() {
               filterUserThread={filterUserThread}
               message={message}
               resolveMessage={resolveMessage}
+              displayModalOnboarding={displayModalOnboarding}
               desktopPath={desktopPath}
             />
           ))}
@@ -315,6 +323,26 @@ export default function Results() {
           </div>
           <div>
             <p>added words show here</p>
+          </div>
+        </Box>
+      </Modal>
+      <Modal
+        open={showMarkResolve}
+        onClose={() => setShowMarkResolve(false)}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={style.modalStyle}>
+          <Typography
+            id="modal-modal-title"
+            variant="h6"
+            component="h2"
+            style={{ marginBottom: 15 }}
+          >
+            Remember to Delete Your Message
+          </Typography>
+          <div style={{ width: '100%', height: 50, padding: 10 }}>
+            <p style={{ marginBottom: 0, color: 'gray' }}>Remember to delete your message on Instagram</p>
           </div>
         </Box>
       </Modal>
