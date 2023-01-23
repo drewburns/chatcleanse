@@ -103,6 +103,8 @@ export default function Results() {
     }
     return problemMessages;
   };
+
+  const getSearchFilter = () => {};
   const clearThreadPath = () => {
     setThreadChatName('');
     setThreadPath('');
@@ -156,6 +158,15 @@ export default function Results() {
               Back
             </p>
           )}
+          {/* {searchOn &&
+            getSearchFilter().map((message) => (
+              <MessageThread
+                filterUserThread={filterUserThread}
+                message={message}
+                resolveMessage={resolveMessage}
+                desktopPath={desktopPath}
+              />
+            ))} */}
           {getProblemFiltered().map((message) => (
             <MessageThread
               filterUserThread={filterUserThread}
