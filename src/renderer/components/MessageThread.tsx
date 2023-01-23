@@ -5,12 +5,14 @@ type Props = {
   desktopPath: string;
   resolveMessage: (val: number) => void;
   isSearch: boolean;
+  filterUserThread: () => void;
 };
 
 export default function MessageThread({
   message,
   resolveMessage,
   desktopPath,
+  filterUserThread,
   isSearch,
 }: Props) {
   function unique(array, propertyName) {

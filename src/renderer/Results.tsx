@@ -34,6 +34,7 @@ export default function Results() {
   const [showAddWords, setShowAddWords] = React.useState(false);
   const [showOmitWords, setShowOmitWords] = React.useState(false);
   const [searchMessages, setSearchMessages] = React.useState([]);
+  const [searchOn, setSearchOn] = React.useState(false);
 
   React.useEffect(() => {
     window.electron.ipcRenderer.sendMessage('getProblemMessages');
@@ -60,12 +61,10 @@ export default function Results() {
     window.electron.ipcRenderer.sendMessage('reset');
   };
 
-  React.useEffect(() => {
-    setSearchMessages([]);
-    if (searchTerm.length > 3) {
-      window.electron.ipcRenderer.sendMessage('search-texts', searchTerm);
-    }
-  }, [searchTerm]);
+  const startSearch = () => {
+    setSearchOn(true);
+    window.electron.ipcRenderer.sendMessage('search-texts', searchTerm);
+  };
 
   const filterUserThread = (thread_path: string) => {
     setThreadPath(thread_path);
@@ -85,8 +84,13 @@ export default function Results() {
     return matchingContext.length > 0;
   };
 
+  React.useEffect(() => {
+    setSearchMessages([]);
+    setSearchOn(false);
+  }, [searchTerm]);
+
   const getProblemFiltered = () => {
-    if (searchTerm.length > 3) {
+    if (searchOn) {
       return problemMessages.filter(
         (m) =>
           (m.content &&
@@ -127,6 +131,7 @@ export default function Results() {
           }}
         >
           <TopBar
+            startSearch={startSearch}
             setSearchTerm={setSearchTerm}
             searchTerm={searchTerm}
             reset={reset}
@@ -134,6 +139,14 @@ export default function Results() {
             setShowOmitWords={setShowOmitWords}
             problemMessages={problemMessages}
           />
+          {searchOn && (
+            <Button
+              onClick={() => setSearchTerm('')}
+              style={{ backgroundColor: 'black', color: 'white' }}
+            >
+              Clear search "{searchTerm}"
+            </Button>
+          )}
           <br />
           {threadPath && (
             <p
@@ -145,6 +158,7 @@ export default function Results() {
           )}
           {getProblemFiltered().map((message) => (
             <MessageThread
+              filterUserThread={filterUserThread}
               message={message}
               resolveMessage={resolveMessage}
               desktopPath={desktopPath}
@@ -152,6 +166,7 @@ export default function Results() {
           ))}
           {searchMessages.map((message) => (
             <MessageThread
+              filterUserThread={filterUserThread}
               isSearch
               message={message}
               resolveMessage={resolveMessage}

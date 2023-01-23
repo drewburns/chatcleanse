@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
-import { TextField } from '@mui/material';
+import { TextField, Button } from '@mui/material';
 import PersonIcon from '@mui/icons-material/Person';
 import React from 'react';
 
@@ -11,6 +11,7 @@ type Props = {
   setSearchTerm: (val: string) => void;
   searchTerm: string;
   reset: () => void;
+  startSearch: () => void;
 };
 
 export default function TopBar({
@@ -19,6 +20,7 @@ export default function TopBar({
   setShowOmitWords,
   setSearchTerm,
   reset,
+  startSearch,
   searchTerm,
 }: Props) {
   return (
@@ -103,14 +105,22 @@ export default function TopBar({
           </div>
         </div>
       </div>
-      <TextField
-        fullWidth
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
-        id="outlined-basic"
-        label="Search for a text"
-        variant="outlined"
-      />
+      <div style={{ display: 'flex' }}>
+        <TextField
+          fullWidth
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          id="outlined-basic"
+          label="Search for a text"
+          variant="outlined"
+        />
+        <Button
+          onClick={startSearch}
+          style={{ backgroundColor: 'black', color: 'white', width: 100 }}
+        >
+          Search
+        </Button>
+      </div>
     </>
   );
 }

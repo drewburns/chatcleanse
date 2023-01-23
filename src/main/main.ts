@@ -180,6 +180,24 @@ const searchAllTextsForKeyWord = (keyword: string) => {
   return foundMessages;
 };
 
+ipcMain.on('add-word', async (event, arg) => {
+  const addWords = store.get('addWords');
+  if (!addWords) {
+    store.set('addWords', addWords.concat(arg));
+  } else {
+    store.set('addWords', [arg]);
+  }
+});
+
+ipcMain.on('omit-word', async (event, arg) => {
+  const omitWords = store.get('omitWords');
+  if (!omitWords) {
+    store.set('omitWords', omitWords.concat(arg));
+  } else {
+    store.set('omitWords', [arg]);
+  }
+});
+
 ipcMain.on('search-texts', async (event, arg) => {
   const found = searchAllTextsForKeyWord(arg);
   event.reply('search-results', found);
