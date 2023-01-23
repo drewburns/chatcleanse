@@ -131,7 +131,7 @@ export default function Results() {
       <div key={key} style={style}>
         <MessageThread
           filterUserThread={filterUserThread}
-          message={getProblemFiltered()[index]}
+          message={getProblemFiltered().concat(searchMessages)[index]}
           resolveMessage={resolveMessage}
           desktopPath={desktopPath}
         />
@@ -209,9 +209,9 @@ export default function Results() {
 
           <List
             width={700}
-            height={1000}
+            height={600}
             rowHeight={600}
-            rowCount={getProblemFiltered().length}
+            rowCount={getProblemFiltered().concat(searchMessages).length}
             rowRenderer={rowRenderer}
           />
         </div>
