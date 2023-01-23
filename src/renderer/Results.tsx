@@ -8,6 +8,8 @@ import {
   useNavigate,
 } from 'react-router-dom';
 
+import { List } from 'react-virtualized';
+
 import './App.css';
 import React from 'react';
 
@@ -110,6 +112,8 @@ export default function Results() {
     }
     return problemMessages;
   };
+
+  const getSearchFilter = () => {};
   const clearThreadPath = () => {
     setThreadChatName('');
     setThreadPath('');
@@ -122,6 +126,25 @@ export default function Results() {
       copyMessages.filter((m) => m.timestamp_ms !== timestamp)
     );
   };
+
+  function rowRenderer({
+    key, // Unique key within array of rows
+    index, // Index of row within collection
+    isScrolling, // The List is currently being scrolled
+    isVisible, // This row is visible within the List (eg it is not an overscanned row)
+    style, // Style object to be applied to row (to position it)
+  }) {
+    return (
+      <div key={key} style={style}>
+        <MessageThread
+          filterUserThread={filterUserThread}
+          message={getProblemFiltered().concat(searchMessages)[index]}
+          resolveMessage={resolveMessage}
+          desktopPath={desktopPath}
+        />
+      </div>
+    );
+  }
 
   return (
     <div>
@@ -163,7 +186,16 @@ export default function Results() {
               Back
             </p>
           )}
-          {getProblemFiltered().map((message) => (
+          {/* {searchOn &&
+            getSearchFilter().map((message) => (
+              <MessageThread
+                filterUserThread={filterUserThread}
+                message={message}
+                resolveMessage={resolveMessage}
+                desktopPath={desktopPath}
+              />
+            ))} */}
+          {/* {getProblemFiltered().map((message, index) => (
             <MessageThread
               filterUserThread={filterUserThread}
               message={message}
@@ -172,7 +204,8 @@ export default function Results() {
               desktopPath={desktopPath}
             />
           ))}
-          {searchMessages.map((message) => (
+          
+          {searchMessages.map((message, index) => (
             <MessageThread
               filterUserThread={filterUserThread}
               isSearch
@@ -180,7 +213,15 @@ export default function Results() {
               resolveMessage={resolveMessage}
               desktopPath={desktopPath}
             />
-          ))}
+          ))} */}
+
+          <List
+            width={700}
+            height={600}
+            rowHeight={600}
+            rowCount={getProblemFiltered().concat(searchMessages).length}
+            rowRenderer={rowRenderer}
+          />
         </div>
       </div>
       <Modal

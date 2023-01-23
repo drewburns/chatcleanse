@@ -157,6 +157,13 @@ const searchAllTextsForKeyWord = (keyword: string) => {
       !x.includes('secret_conversations')
   );
   const foundMessages = [];
+  // TODO: abstract out filter
+  const filter = new Filter(); // bad words filter
+  const newBadWords = ['me hard', 'so hard'];
+  let removeWords = ['god', 'damn', 'shit', 'hell', 'pissed'];
+  filter.removeWords(...removeWords);
+  filter.addWords(...newBadWords);
+
   const username = getUserName(files);
   files.forEach((f) => {
     const data = JSON.parse(fs.readFileSync(f, 'utf8'));
@@ -164,7 +171,8 @@ const searchAllTextsForKeyWord = (keyword: string) => {
       const m = data.messages[x];
       if (
         m.content &&
-        m.content.toLowerCase().indexOf(keyword.toLowerCase()) > -1
+        m.content.toLowerCase().indexOf(keyword.toLowerCase()) > -1 &&
+        !filter.isProfane(m.content)
       ) {
         foundMessages.push({
           ...m,
