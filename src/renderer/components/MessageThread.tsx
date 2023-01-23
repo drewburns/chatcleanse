@@ -5,7 +5,7 @@ type Props = {
   desktopPath: string;
   resolveMessage: (val: number) => void;
   isSearch: boolean;
-  filterUserThread: () => void;
+  filterUserThread: (val: string) => void;
 };
 
 export default function MessageThread({
