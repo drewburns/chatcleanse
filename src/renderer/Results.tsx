@@ -24,6 +24,7 @@ import {
 } from '@mui/material';
 import TopBar from './components/TopBar';
 import MessageThread from './components/MessageThread';
+import WordsModal from './components/WordsModal';
 // import { Box, Card } from '@chakra-ui/react';
 
 export default function Results() {
@@ -39,16 +40,27 @@ export default function Results() {
   const [onboardingShown, setOnboardingShown] = React.useState(false);
   const [searchMessages, setSearchMessages] = React.useState([]);
   const [searchOn, setSearchOn] = React.useState(false);
+  const [addWords, setAddWords] = React.useState([]);
+  const [omitWords, setOmitWords] = React.useState([]);
 
   React.useEffect(() => {
     window.electron.ipcRenderer.sendMessage('getProblemMessages');
+    window.electron.ipcRenderer.sendMessage('get-add-words');
+    window.electron.ipcRenderer.sendMessage('get-omit-words');
     window.electron.ipcRenderer.on('go-to-page', (page) => {
-      console.log('to to page', page);
       if (!page) {
         navigation('/');
       } else {
         navigation(page);
       }
+    });
+
+    window.electron.ipcRenderer.on('add-words', (arr) => {
+      setAddWords(arr);
+    });
+
+    window.electron.ipcRenderer.on('omit-words', (arr) => {
+      setOmitWords(arr);
     });
 
     window.electron.ipcRenderer.on('search-results', (messages) => {
@@ -119,6 +131,35 @@ export default function Results() {
     setThreadPath('');
   };
 
+  const setWords = (type: string, newWord: string) => {
+    if (type === 'Omit') {
+      const newOmit = omitWords.concat(newWord);
+      setOmitWords(newOmit);
+      window.electron.ipcRenderer.sendMessage('set-omit-words', newOmit);
+      window.electron.ipcRenderer.sendMessage('getProblemMessages');
+      return;
+    }
+    const newAdd = addWords.concat(newWord);
+    setAddWords(newAdd);
+
+    window.electron.ipcRenderer.sendMessage('set-add-words', newAdd);
+    window.electron.ipcRenderer.sendMessage('getProblemMessages');
+  };
+
+  const deleteWord = (type: string, deleteWord: string) => {
+    if (type === 'Omit') {
+      const newOmit = omitWords.filter((x) => x !== deleteWord);
+      setOmitWords(newOmit);
+      window.electron.ipcRenderer.sendMessage('set-omit-words', newOmit);
+      window.electron.ipcRenderer.sendMessage('getProblemMessages');
+      return;
+    }
+    const newAdd = addWords.filter((x) => x !== deleteWord);
+    setAddWords(newAdd);
+
+    window.electron.ipcRenderer.sendMessage('set-add-words', newAdd);
+    window.electron.ipcRenderer.sendMessage('getProblemMessages');
+  };
   const resolveMessage = (timestamp: number) => {
     window.electron.ipcRenderer.sendMessage('resolveMessage', timestamp);
     const copyMessages = [...problemMessages];
@@ -186,34 +227,6 @@ export default function Results() {
               Back
             </p>
           )}
-          {/* {searchOn &&
-            getSearchFilter().map((message) => (
-              <MessageThread
-                filterUserThread={filterUserThread}
-                message={message}
-                resolveMessage={resolveMessage}
-                desktopPath={desktopPath}
-              />
-            ))} */}
-          {/* {getProblemFiltered().map((message, index) => (
-            <MessageThread
-              filterUserThread={filterUserThread}
-              message={message}
-              resolveMessage={resolveMessage}
-              displayModalOnboarding={displayModalOnboarding}
-              desktopPath={desktopPath}
-            />
-          ))}
-          
-          {searchMessages.map((message, index) => (
-            <MessageThread
-              filterUserThread={filterUserThread}
-              isSearch
-              message={message}
-              resolveMessage={resolveMessage}
-              desktopPath={desktopPath}
-            />
-          ))} */}
 
           <List
             width={700}
@@ -230,49 +243,13 @@ export default function Results() {
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
-        <Box sx={style.modalStyle}>
-          <Typography
-            id="modal-modal-title"
-            variant="h6"
-            component="h2"
-            style={{ marginBottom: 15 }}
-          >
-            Add Words to Blocklist
-          </Typography>
-          <div
-            style={{
-              display: 'flex',
-              height: 50,
-              width: '100%',
-              backgroundColor: 'white',
-              borderRadius: 10,
-              flexDirection: 'row',
-              alignItems: 'center',
-              border: '.25px solid black',
-            }}
-          >
-            <div style={{ width: '100%', height: 50, padding: 10 }}>
-              <p style={{ marginBottom: 0, color: 'gray' }}>Add a word</p>
-            </div>
-            <div
-              style={{
-                display: 'flex',
-                width: 130,
-                height: 50,
-                marginLeft: 10,
-                alignItems: 'center',
-                justifyContent: 'center',
-                backgroundColor: 'black',
-                borderRadius: 10,
-                borderColor: 'black',
-                borderWidth: 1,
-              }}
-            >
-              <p style={{ color: 'white' }}>Add</p>
-            </div>
-          </div>
-          <p>added words show here</p>
-        </Box>
+        <WordsModal
+          type="Add"
+          deleteWord={deleteWord}
+          setWords={setWords}
+          addWords={addWords}
+          omitWords={omitWords}
+        />
       </Modal>
       <Modal
         open={showOmitWords}
@@ -280,51 +257,13 @@ export default function Results() {
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
-        <Box sx={style.modalStyle}>
-          <Typography
-            id="modal-modal-title"
-            variant="h6"
-            component="h2"
-            style={{ marginBottom: 15 }}
-          >
-            Add Words to Omit
-          </Typography>
-          <div
-            style={{
-              display: 'flex',
-              height: 50,
-              width: '100%',
-              backgroundColor: 'white',
-              borderRadius: 10,
-              flexDirection: 'row',
-              alignItems: 'center',
-              border: '.25px solid black',
-            }}
-          >
-            <div style={{ width: '100%', height: 50, padding: 10 }}>
-              <p style={{ marginBottom: 0, color: 'gray' }}>Add a word</p>
-            </div>
-            <div
-              style={{
-                display: 'flex',
-                width: 130,
-                height: 50,
-                marginLeft: 10,
-                alignItems: 'center',
-                justifyContent: 'center',
-                backgroundColor: 'black',
-                borderRadius: 10,
-                borderColor: 'black',
-                borderWidth: 1,
-              }}
-            >
-              <p style={{ color: 'white' }}>Add</p>
-            </div>
-          </div>
-          <div>
-            <p>added words show here</p>
-          </div>
-        </Box>
+        <WordsModal
+          type="Omit"
+          deleteWord={deleteWord}
+          setWords={setWords}
+          addWords={addWords}
+          omitWords={omitWords}
+        />
       </Modal>
       <Modal
         open={showMarkResolve}
@@ -342,7 +281,9 @@ export default function Results() {
             Remember to Delete Your Message
           </Typography>
           <div style={{ width: '100%', height: 50, padding: 10 }}>
-            <p style={{ marginBottom: 0, color: 'gray' }}>Remember to delete your message on Instagram</p>
+            <p style={{ marginBottom: 0, color: 'gray' }}>
+              Remember to delete your message on Instagram
+            </p>
           </div>
         </Box>
       </Modal>

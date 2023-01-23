@@ -73,6 +73,8 @@ ipcMain.on('resolveMessage', async (event, timestamp) => {
 ipcMain.on('reset', async (event, arg) => {
   store.delete('problemMessages');
   store.delete('resolved');
+  store.delete('omitWords');
+  store.delete('addWords');
   // ipcMain.sendMe.reply('go-to-page', '');
   mainWindow?.webContents.send('go-to-page', '');
 });
@@ -135,6 +137,23 @@ const mode = (a: string[]) => {
 
   return currentStreak > bestStreak ? currentElem : bestElem;
 };
+
+const getFilter = () => {
+  const filter = new Filter(); // bad words filter
+  let newBadWords = ['me hard', 'so hard'];
+  let removeWords = ['god', 'damn', 'shit', 'hell', 'pissed'];
+  const userAddedWords = store.get('addWords');
+  const userOmitWords = store.get('omitWords');
+  if (userAddedWords) {
+    newBadWords = newBadWords.concat(userAddedWords);
+  }
+  if (userOmitWords) {
+    removeWords = removeWords.concat(userOmitWords);
+  }
+  filter.removeWords(...removeWords);
+  filter.addWords(...newBadWords);
+  return filter;
+};
 const getUserName = (files: string[]) => {
   const usernameCounterArr: string[] = [];
   files.forEach((f) => {
@@ -158,11 +177,7 @@ const searchAllTextsForKeyWord = (keyword: string) => {
   );
   const foundMessages = [];
   // TODO: abstract out filter
-  const filter = new Filter(); // bad words filter
-  const newBadWords = ['me hard', 'so hard'];
-  let removeWords = ['god', 'damn', 'shit', 'hell', 'pissed'];
-  filter.removeWords(...removeWords);
-  filter.addWords(...newBadWords);
+  const filter = getFilter();
 
   const username = getUserName(files);
   files.forEach((f) => {
@@ -188,54 +203,18 @@ const searchAllTextsForKeyWord = (keyword: string) => {
   return foundMessages;
 };
 
-ipcMain.on('add-word', async (event, arg) => {
-  const addWords = store.get('addWords');
-  if (!addWords) {
-    store.set('addWords', addWords.concat(arg));
-  } else {
-    store.set('addWords', [arg]);
-  }
-});
-
-ipcMain.on('omit-word', async (event, arg) => {
-  const omitWords = store.get('omitWords');
-  if (!omitWords) {
-    store.set('omitWords', omitWords.concat(arg));
-  } else {
-    store.set('omitWords', [arg]);
-  }
-});
-
-ipcMain.on('search-texts', async (event, arg) => {
-  const found = searchAllTextsForKeyWord(arg);
-  event.reply('search-results', found);
-});
-
-ipcMain.on('file-drop', async (event, arg) => {
+const scanForProblemMessages = () => {
   const desktopPath = app.getPath('desktop') + '/chatcleanse_data';
-  if (!fs.existsSync(desktopPath)) {
-    fs.mkdirSync(desktopPath, { recursive: true });
-  }
-
-  arg.forEach((file) => {
-    const newPath = desktopPath + '/' + file.split('/').slice(5).join('/');
-    fse.copy(file, newPath);
-    // fs.createReadStream(file).pipe(fs.createWriteStream(newPath));
-  });
-
-  const files = arg.filter(
+  const allFiles = walk(desktopPath);
+  const files = allFiles.filter(
     (x) =>
       x.includes('/messages/inbox/') &&
       x.includes('.json') &&
       !x.includes('secret_conversations')
   );
-  // const data = fs.readFileSync(arg[0], 'utf8');
   let problemMessages = [];
-  const filter = new Filter(); // bad words filter
-  const newBadWords = ['me hard', 'so hard'];
-  let removeWords = ['god', 'damn', 'shit', 'hell', 'pissed'];
-  filter.removeWords(...removeWords);
-  filter.addWords(...newBadWords);
+  // TODO: abstract out filter
+  const filter = getFilter();
 
   const username = getUserName(files);
   files.forEach((f) => {
@@ -258,15 +237,63 @@ ipcMain.on('file-drop', async (event, arg) => {
     (a, b) => a.timestamp_ms - b.timestamp_ms
   );
 
+  return problemMessages;
+  // console.log(problemMessages);
+};
+
+ipcMain.on('get-add-words', async (event, arg) => {
+  const addWords = store.get('addWords');
+  event.reply('add-words', addWords || []);
+});
+
+ipcMain.on('get-omit-words', async (event, arg) => {
+  const omitWords = store.get('omitWords');
+  event.reply('omit-words', omitWords || []);
+});
+
+ipcMain.on('set-add-words', async (event, arg) => {
+  store.set('addWords', arg);
+  const problemMessages = scanForProblemMessages();
+  store.set('hasUploaded', true);
+  store.set('problemMessages', problemMessages);
+  event.reply('problem-messages', problemMessages);
+});
+
+ipcMain.on('set-omit-words', async (event, arg) => {
+  store.set('omitWords', arg);
+  const problemMessages = scanForProblemMessages();
+  store.set('hasUploaded', true);
+  store.set('problemMessages', problemMessages);
+  event.reply('problem-messages', problemMessages);
+});
+
+ipcMain.on('search-texts', async (event, arg) => {
+  const found = searchAllTextsForKeyWord(arg);
+  event.reply('search-results', found);
+});
+
+ipcMain.on('file-drop', async (event, arg) => {
+  const desktopPath = app.getPath('desktop') + '/chatcleanse_data';
+  if (!fs.existsSync(desktopPath)) {
+    fs.mkdirSync(desktopPath, { recursive: true });
+  }
+
+  arg.forEach((file) => {
+    const newPath = desktopPath + '/' + file.split('/').slice(5).join('/');
+    fse.copy(file, newPath);
+    // fs.createReadStream(file).pipe(fs.createWriteStream(newPath));
+  });
+
   if (arg.length > 0) {
+    const problemMessages = scanForProblemMessages();
     store.set('hasUploaded', true);
     store.set('problemMessages', problemMessages);
+    event.reply('problem-messages', problemMessages);
+    if (problemMessages.length !== 0) {
+      mainWindow.webContents.send('go-to-page', 'results');
+    }
   }
   // console.log(problemMessages);
-  event.reply('problem-messages', problemMessages);
-  if (problemMessages.length !== 0) {
-    mainWindow.webContents.send('go-to-page', 'results');
-  }
 });
 
 if (process.env.NODE_ENV === 'production') {

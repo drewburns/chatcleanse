@@ -9,12 +9,11 @@ type Props = {
   filterUserThread: () => void;
 };
 
-
-
 export default function MessageThread({
   message,
   resolveMessage,
-  desktopPath, displayModalOnboarding,
+  desktopPath,
+  displayModalOnboarding,
   filterUserThread,
   isSearch,
 }: Props) {

@@ -19,13 +19,6 @@ const Hello = () => {
   const navigation = useNavigate();
 
   React.useEffect(() => {
-    window.electron.ipcRenderer.on('problem-messages', (data) => {
-      console.log(data);
-      // setProblemMessages(data);
-      if (data[0]) {
-        navigation('loading');
-      }
-    });
     window.electron.ipcRenderer.on('go-to-page', (page) => {
       navigation(page);
     });
