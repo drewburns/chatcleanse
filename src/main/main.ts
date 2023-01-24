@@ -233,9 +233,9 @@ const scanForProblemMessages = () => {
       }
     }
   });
-  problemMessages = problemMessages.sort(
-    (a, b) => a.timestamp_ms - b.timestamp_ms
-  );
+  // problemMessages = problemMessages.sort(
+  //   (a, b) => a.timestamp_ms - b.timestamp_ms
+  // );
 
   return problemMessages;
   // console.log(problemMessages);
