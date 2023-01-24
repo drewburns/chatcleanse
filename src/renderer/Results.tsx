@@ -181,7 +181,7 @@ export default function Results() {
   };
 
   const getRowHeight = ({ index }) => {
-    return 1000;
+    return 600;
   };
 
   function rowRenderer({
@@ -192,7 +192,7 @@ export default function Results() {
     style, // Style object to be applied to row (to position it)
   }) {
     return (
-      <div key={key}>
+      <div key={key} style={style}>
         <MessageThread
           filterUserThread={filterUserThread}
           message={getProblemFiltered().concat(searchMessages)[index]}
