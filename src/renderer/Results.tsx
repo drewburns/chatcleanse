@@ -160,6 +160,9 @@ export default function Results() {
   };
 
   const confirmChanges = (type: string) => {
+    setLoading(true);
+    setShowAddWords(false);
+    setShowOmitWords(false);
     if (type === 'Omit') {
       window.electron.ipcRenderer.sendMessage('set-omit-words', omitWords);
       window.electron.ipcRenderer.sendMessage('getProblemMessages');
@@ -167,9 +170,6 @@ export default function Results() {
     }
     window.electron.ipcRenderer.sendMessage('set-add-words', addWords);
     window.electron.ipcRenderer.sendMessage('getProblemMessages');
-    setLoading(true);
-    setShowAddWords(false);
-    setShowOmitWords(false);
   };
 
   const resolveMessage = (timestamp: number) => {
