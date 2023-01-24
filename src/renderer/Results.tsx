@@ -143,8 +143,6 @@ export default function Results() {
     if (type === 'Omit') {
       const newOmit = omitWords.concat(newWord);
       setOmitWords(newOmit);
-      window.electron.ipcRenderer.sendMessage('set-omit-words', newOmit);
-      window.electron.ipcRenderer.sendMessage('getProblemMessages');
       return;
     }
     const newAdd = addWords.concat(newWord);
