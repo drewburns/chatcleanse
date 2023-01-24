@@ -192,7 +192,7 @@ export default function Results() {
     style, // Style object to be applied to row (to position it)
   }) {
     return (
-      <div key={key} style={style}>
+      <div key={key} style={{ marginTop: 20 }}>
         <MessageThread
           filterUserThread={filterUserThread}
           message={getProblemFiltered().concat(searchMessages)[index]}
