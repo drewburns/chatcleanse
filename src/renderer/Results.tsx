@@ -248,7 +248,7 @@ export default function Results() {
           )}
           <List
             width={700}
-            height={600}
+            height={870}
             rowHeight={getRowHeight}
             rowCount={getProblemFiltered().concat(searchMessages).length}
             rowRenderer={rowRenderer}
