@@ -233,9 +233,9 @@ const scanForProblemMessages = () => {
       }
     }
   });
-  // problemMessages = problemMessages.sort(
-  //   (a, b) => a.timestamp_ms - b.timestamp_ms
-  // );
+  problemMessages = problemMessages.sort(
+    (a, b) => a.timestamp_ms - b.timestamp_ms
+  );
 
   return problemMessages;
   // console.log(problemMessages);
@@ -254,17 +254,17 @@ ipcMain.on('get-omit-words', async (event, arg) => {
 ipcMain.on('set-add-words', async (event, arg) => {
   store.set('addWords', arg);
   const problemMessages = scanForProblemMessages();
+  event.reply('problem-messages', problemMessages);
   store.set('hasUploaded', true);
   store.set('problemMessages', problemMessages);
-  event.reply('problem-messages', problemMessages);
 });
 
 ipcMain.on('set-omit-words', async (event, arg) => {
   store.set('omitWords', arg);
   const problemMessages = scanForProblemMessages();
+  event.reply('problem-messages', problemMessages);
   store.set('hasUploaded', true);
   store.set('problemMessages', problemMessages);
-  event.reply('problem-messages', problemMessages);
 });
 
 ipcMain.on('search-texts', async (event, arg) => {
