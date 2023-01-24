@@ -25,6 +25,7 @@ import {
 import TopBar from './components/TopBar';
 import MessageThread from './components/MessageThread';
 import WordsModal from './components/WordsModal';
+import Loading from './components/Loading';
 // import { Box, Card } from '@chakra-ui/react';
 
 export default function Results() {
@@ -42,6 +43,7 @@ export default function Results() {
   const [searchOn, setSearchOn] = React.useState(false);
   const [addWords, setAddWords] = React.useState([]);
   const [omitWords, setOmitWords] = React.useState([]);
+  const [loading, setLoading] = React.useState(false);
 
   React.useEffect(() => {
     window.electron.ipcRenderer.sendMessage('getProblemMessages');
@@ -70,6 +72,7 @@ export default function Results() {
     window.electron.ipcRenderer.on('problemMessages', (data) => {
       setProblemMessages(data.messages);
       setDesktopPath(data.desktopPath);
+      setLoading(false);
     });
   }, []);
 
@@ -110,6 +113,11 @@ export default function Results() {
     setSearchOn(false);
   }, [searchTerm]);
 
+  React.useEffect(() => {
+    window.electron.ipcRenderer.sendMessage('get-add-words');
+    window.electron.ipcRenderer.sendMessage('get-omit-words');
+  }, [showAddWords, showOmitWords]);
+
   const getProblemFiltered = () => {
     if (searchOn) {
       return problemMessages.filter(
@@ -141,25 +149,31 @@ export default function Results() {
     }
     const newAdd = addWords.concat(newWord);
     setAddWords(newAdd);
-
-    window.electron.ipcRenderer.sendMessage('set-add-words', newAdd);
-    window.electron.ipcRenderer.sendMessage('getProblemMessages');
   };
 
   const deleteWord = (type: string, deleteWord: string) => {
     if (type === 'Omit') {
       const newOmit = omitWords.filter((x) => x !== deleteWord);
       setOmitWords(newOmit);
-      window.electron.ipcRenderer.sendMessage('set-omit-words', newOmit);
-      window.electron.ipcRenderer.sendMessage('getProblemMessages');
       return;
     }
     const newAdd = addWords.filter((x) => x !== deleteWord);
     setAddWords(newAdd);
-
-    window.electron.ipcRenderer.sendMessage('set-add-words', newAdd);
-    window.electron.ipcRenderer.sendMessage('getProblemMessages');
   };
+
+  const confirmChanges = (type: string) => {
+    if (type === 'Omit') {
+      window.electron.ipcRenderer.sendMessage('set-omit-words', omitWords);
+      window.electron.ipcRenderer.sendMessage('getProblemMessages');
+      return;
+    }
+    window.electron.ipcRenderer.sendMessage('set-add-words', addWords);
+    window.electron.ipcRenderer.sendMessage('getProblemMessages');
+    setLoading(true);
+    setShowAddWords(false);
+    setShowOmitWords(false);
+  };
+
   const resolveMessage = (timestamp: number) => {
     window.electron.ipcRenderer.sendMessage('resolveMessage', timestamp);
     const copyMessages = [...problemMessages];
@@ -169,7 +183,6 @@ export default function Results() {
   };
 
   const getRowHeight = ({ index }) => {
-    const message = getProblemFiltered().concat(searchMessages)[index];
     return 1000;
   };
 
@@ -181,7 +194,7 @@ export default function Results() {
     style, // Style object to be applied to row (to position it)
   }) {
     return (
-      <div key={key} >
+      <div key={key}>
         <MessageThread
           filterUserThread={filterUserThread}
           message={getProblemFiltered().concat(searchMessages)[index]}
@@ -192,6 +205,9 @@ export default function Results() {
     );
   }
 
+  if (loading) {
+    return <Loading />;
+  }
   return (
     <div>
       <div
@@ -250,6 +266,7 @@ export default function Results() {
         <WordsModal
           type="Add"
           deleteWord={deleteWord}
+          confirmChanges={confirmChanges}
           setWords={setWords}
           addWords={addWords}
           omitWords={omitWords}
@@ -264,6 +281,7 @@ export default function Results() {
         <WordsModal
           type="Omit"
           deleteWord={deleteWord}
+          confirmChanges={confirmChanges}
           setWords={setWords}
           addWords={addWords}
           omitWords={omitWords}

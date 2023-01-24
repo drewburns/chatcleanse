@@ -12,6 +12,7 @@ import './App.css';
 import React from 'react';
 import { Card, Grid, LinearProgress } from '@mui/material';
 import Results from './Results';
+import Loading from './components/Loading';
 
 const Hello = () => {
   const { acceptedFiles, getRootProps, getInputProps } = useDropzone();
@@ -82,25 +83,6 @@ const Hello = () => {
         </Card>
       </Grid>
     </Grid>
-  );
-};
-
-const Loading = () => {
-  const navigation = useNavigate();
-
-  const delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
-  React.useEffect(() => {
-    (async () => {
-      // await delay(2000);
-      // navigation('/results');
-    })();
-  }, []);
-
-  return (
-    <div>
-      <h3>Loading...</h3>
-      <LinearProgress />
-    </div>
   );
 };
 
