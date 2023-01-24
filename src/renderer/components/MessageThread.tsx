@@ -6,7 +6,7 @@ type Props = {
   resolveMessage: (val: number) => void;
   isSearch: boolean;
   displayModalOnboarding: () => void;
-  filterUserThread: () => void;
+  filterUserThread: (val: string) => void;
 };
 
 export default function MessageThread({
@@ -136,6 +136,7 @@ export default function MessageThread({
               maxWidth: 300,
             }}
           >
+            {/* {cm.content && <p>{decodeURIComponent(escape(cm.content))}</p>} */}
             {cm.content && <p>{decodeURIComponent(escape(cm.content))}</p>}
             {cm.photos && displayImages(cm.photos)}
             {cm.audio_files && displayAudio(cm.audio_files)}

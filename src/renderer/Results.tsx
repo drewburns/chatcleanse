@@ -168,6 +168,11 @@ export default function Results() {
     );
   };
 
+  const getRowHeight = ({ index }) => {
+    const message = getProblemFiltered().concat(searchMessages)[index];
+    return 1000;
+  };
+
   function rowRenderer({
     key, // Unique key within array of rows
     index, // Index of row within collection
@@ -176,7 +181,7 @@ export default function Results() {
     style, // Style object to be applied to row (to position it)
   }) {
     return (
-      <div key={key} style={style}>
+      <div key={key} >
         <MessageThread
           filterUserThread={filterUserThread}
           message={getProblemFiltered().concat(searchMessages)[index]}
@@ -227,11 +232,10 @@ export default function Results() {
               Back
             </p>
           )}
-
           <List
             width={700}
             height={600}
-            rowHeight={600}
+            rowHeight={getRowHeight}
             rowCount={getProblemFiltered().concat(searchMessages).length}
             rowRenderer={rowRenderer}
           />
