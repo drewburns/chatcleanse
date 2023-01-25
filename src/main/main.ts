@@ -233,7 +233,7 @@ const scanForProblemMessages = () => {
     }
   });
   problemMessages = problemMessages.sort(
-    (a, b) => a.timestamp_ms - b.timestamp_ms
+    (a, b) => b.timestamp_ms - a.timestamp_ms
   );
 
   return problemMessages;

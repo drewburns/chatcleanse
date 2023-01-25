@@ -182,9 +182,9 @@ export default function Results() {
 
   const getRowHeight = ({ index }) => {
     const m = getProblemFiltered().concat(searchMessages)[index];
-    if (m.context.length === 0) return 250;
-    if (m.context.length === 1) return 350;
-    if (m.context.length === 2) return 450;
+    // if (m.context.length === 0) return 250;
+    // if (m.context.length === 1) return 350;
+    // if (m.context.length === 2) return 450;
     return 600;
   };
 
