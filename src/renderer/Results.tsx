@@ -8,7 +8,6 @@ import {
   useNavigate,
 } from 'react-router-dom';
 
-import { List } from 'react-virtualized';
 
 import './App.css';
 import React from 'react';
@@ -21,6 +20,7 @@ import {
   Grid,
   Typography,
   TextField,
+  Pagination,
 } from '@mui/material';
 import TopBar from './components/TopBar';
 import MessageThread from './components/MessageThread';
@@ -44,7 +44,9 @@ export default function Results() {
   const [addWords, setAddWords] = React.useState([]);
   const [omitWords, setOmitWords] = React.useState([]);
   const [loading, setLoading] = React.useState(false);
+  const [itemOffset, setItemOffset] = React.useState(0);
 
+  const itemsPerPage = 2;
   React.useEffect(() => {
     window.electron.ipcRenderer.sendMessage('getProblemMessages');
     window.electron.ipcRenderer.sendMessage('get-add-words');
@@ -67,12 +69,14 @@ export default function Results() {
 
     window.electron.ipcRenderer.on('search-results', (messages) => {
       setSearchMessages(messages);
+      setItemOffset(0);
     });
 
     window.electron.ipcRenderer.on('problemMessages', (data) => {
       setProblemMessages(data.messages);
       setDesktopPath(data.desktopPath);
       setLoading(false);
+      setItemOffset(0);
     });
   }, []);
 
@@ -180,33 +184,17 @@ export default function Results() {
     );
   };
 
-  const getRowHeight = ({ index }) => {
-    const m = getProblemFiltered().concat(searchMessages)[index];
-    // if (m.context.length === 0) return 250;
-    // if (m.context.length === 1) return 350;
-    // if (m.context.length === 2) return 450;
-    return 600;
-  };
+  const allMessages = getProblemFiltered().concat(searchMessages);
+  const endOffset = itemOffset + itemsPerPage;
+  const pageCount = Math.ceil(allMessages.length / itemsPerPage);
 
-  function rowRenderer({
-    key, // Unique key within array of rows
-    index, // Index of row within collection
-    isScrolling, // The List is currently being scrolled
-    isVisible, // This row is visible within the List (eg it is not an overscanned row)
-    style, // Style object to be applied to row (to position it)
-  }) {
-    // {height: 300, left: 0, position: 'absolute', top: 7200, width: '100%'}
-    return (
-      <div key={key} style={style}>
-        <MessageThread
-          filterUserThread={filterUserThread}
-          message={getProblemFiltered().concat(searchMessages)[index]}
-          resolveMessage={resolveMessage}
-          desktopPath={desktopPath}
-        />
-      </div>
-    );
-  }
+  const allMessagesPaginated = allMessages.slice(itemOffset, endOffset);
+
+  const handlePageClick = (event, value) => {
+    console.log('VALUE', value);
+    const newOffset = ((value - 1) * itemsPerPage) % allMessages.length;
+    setItemOffset(newOffset);
+  };
 
   if (loading) {
     return <Loading />;
@@ -251,13 +239,30 @@ export default function Results() {
               Back
             </p>
           )}
-          <List
-            width={700}
-            height={870}
-            rowHeight={getRowHeight}
-            rowCount={getProblemFiltered().concat(searchMessages).length}
-            rowRenderer={rowRenderer}
-          />
+          {allMessagesPaginated.map((message) => (
+            <MessageThread
+              filterUserThread={filterUserThread}
+              message={message}
+              resolveMessage={resolveMessage}
+              desktopPath={desktopPath}
+            />
+          ))}
+          <div
+            style={{
+              alignContent: 'center',
+              alignItems: 'center',
+              display: 'flex',
+              justifyContent: 'center',
+              marginTop: 16,
+              marginBottom: 30,
+            }}
+          >
+            <Pagination
+              count={pageCount}
+              onChange={handlePageClick}
+              color="primary"
+            />
+          </div>
         </div>
       </div>
       <Modal
