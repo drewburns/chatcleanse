@@ -70,14 +70,7 @@ export default function Results() {
     });
 
     window.electron.ipcRenderer.on('problemMessages', (data) => {
-      const messages = data.messages;
-      setProblemMessages(
-        messages
-          .concat(messages)
-          .concat(messages)
-          .concat(messages)
-          .concat(messages)
-      );
+      setProblemMessages(data.messages);
       setDesktopPath(data.desktopPath);
       setLoading(false);
     });
