@@ -70,7 +70,14 @@ export default function Results() {
     });
 
     window.electron.ipcRenderer.on('problemMessages', (data) => {
-      setProblemMessages(data.messages);
+      const messages = data.messages;
+      setProblemMessages(
+        messages
+          .concat(messages)
+          .concat(messages)
+          .concat(messages)
+          .concat(messages)
+      );
       setDesktopPath(data.desktopPath);
       setLoading(false);
     });
@@ -181,6 +188,10 @@ export default function Results() {
   };
 
   const getRowHeight = ({ index }) => {
+    const m = getProblemFiltered().concat(searchMessages)[index];
+    if (m.context.length === 0) return 250;
+    if (m.context.length === 1) return 350;
+    if (m.context.length === 2) return 450;
     return 600;
   };
 
@@ -191,6 +202,7 @@ export default function Results() {
     isVisible, // This row is visible within the List (eg it is not an overscanned row)
     style, // Style object to be applied to row (to position it)
   }) {
+    // {height: 300, left: 0, position: 'absolute', top: 7200, width: '100%'}
     return (
       <div key={key} style={style}>
         <MessageThread
