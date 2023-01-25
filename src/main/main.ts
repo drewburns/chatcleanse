@@ -398,15 +398,15 @@ app
   .whenReady()
   .then(() => {
     createWindow();
-    console.log('TESTING TESTING TESTING');
-    console.log('-----------------------');
-    console.time('get problem messages');
-    scanForProblemMessages();
-    console.timeEnd('get problem messages');
+    // console.log('TESTING TESTING TESTING');
+    // console.log('-----------------------');
+    // console.time('get problem messages');
+    // scanForProblemMessages();
+    // console.timeEnd('get problem messages');
 
-    console.time('get search messages');
-    searchAllTextsForKeyWord('haha');
-    console.timeEnd('get search messages');
+    // console.time('get search messages');
+    // searchAllTextsForKeyWord('haha');
+    // console.timeEnd('get search messages');
 
     app.on('activate', () => {
       // On macOS it's common to re-create a window in the app when the
