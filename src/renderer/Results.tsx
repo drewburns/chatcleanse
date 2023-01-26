@@ -45,7 +45,7 @@ export default function Results() {
   const [loading, setLoading] = React.useState(false);
   const [itemOffset, setItemOffset] = React.useState(0);
 
-  const itemsPerPage = 2;
+  const itemsPerPage = 20;
   React.useEffect(() => {
     window.electron.ipcRenderer.sendMessage('getProblemMessages');
     window.electron.ipcRenderer.sendMessage('get-add-words');
