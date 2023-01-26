@@ -15,7 +15,9 @@ import Results from './Results';
 import Loading from './components/Loading';
 
 const Hello = () => {
-  const { acceptedFiles, getRootProps, getInputProps } = useDropzone();
+  const { acceptedFiles, getRootProps, getInputProps } = useDropzone({
+    noClick: true,
+  });
   const [problemMessages, setProblemMessages] = React.useState([]);
   const navigation = useNavigate();
 

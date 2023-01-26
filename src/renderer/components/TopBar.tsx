@@ -113,6 +113,9 @@ export default function TopBar({
           id="outlined-basic"
           label="Search for a text"
           variant="outlined"
+          onKeyUp={(event) => {
+            if (event.key === 'Enter') startSearch();
+          }}
         />
         <Button
           onClick={startSearch}
