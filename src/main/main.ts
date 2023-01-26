@@ -17,6 +17,7 @@ import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
+import { m } from 'framer-motion';
 var Filter = require('bad-words');
 const fse = require('fs-extra');
 
@@ -46,6 +47,7 @@ ipcMain.on('getProblemMessages', async (event, arg) => {
   // console.log('resolved', resolved);
   const desktopPath = app.getPath('desktop');
   const allMessages = store.get('problemMessages');
+  console.log('GETTING PROBLEM', allMessages);
   if (!resolved) {
     return event.reply('problemMessages', {
       messages: allMessages,
@@ -112,6 +114,16 @@ var walk = function (dir) {
   });
   return results;
 };
+
+function diffArray(arr1, arr2) {
+  function diff(a, b) {
+    return a.filter((item) => b.indexOf(item) === -1);
+  }
+
+  var diff1 = diff(arr1, arr2); // [0, 1]
+  var diff2 = diff(arr2, arr1); // [5, 6]
+  return [].concat(diff1, diff2); // [0, 1, 5, 6]
+}
 
 const mode = (a: string[]) => {
   a = a.slice().sort((x, y) => x - y);
@@ -251,25 +263,125 @@ ipcMain.on('get-omit-words', async (event, arg) => {
 });
 
 ipcMain.on('set-add-words', async (event, arg) => {
+  const oldAddWords = store.get('addWords') || [];
   store.set('addWords', arg);
-  const problemMessages = scanForProblemMessages();
-  event.reply('problem-messages', problemMessages);
-  store.set('hasUploaded', true);
-  store.set('problemMessages', problemMessages);
+  const difference = diffArray(oldAddWords, arg);
+  if (difference.length === 0) {
+    event.reply('problem-messages', store.get('problemMessages'));
+    return;
+  }
+  if (arg.length > oldAddWords.length) {
+    // new words added
+    event.reply(
+      'problem-messages',
+      updateProblemMessagesWithNewWords(difference)
+    );
+    return;
+  }
+
+  event.reply('problem-messages', removeProblemMessagesWithWords(difference));
 });
 
 ipcMain.on('set-omit-words', async (event, arg) => {
+  const oldOmitWords = store.get('omitWords') || [];
   store.set('omitWords', arg);
-  const problemMessages = scanForProblemMessages();
-  event.reply('problem-messages', problemMessages);
-  store.set('hasUploaded', true);
-  store.set('problemMessages', problemMessages);
+  const difference = diffArray(oldOmitWords, arg);
+  if (difference.length === 0) {
+    event.reply('problem-messages', store.get('problemMessages'));
+    return;
+  }
+  if (arg.length > oldOmitWords.length) {
+    // new words added
+    event.reply('problem-messages', removeProblemMessagesWithWords(difference));
+    return;
+  }
+
+  event.reply(
+    'problem-messages',
+    updateProblemMessagesWithNewWords(difference)
+  );
+  // store.set('omitWords', arg);
+  // const problemMessages = scanForProblemMessages();
+  // event.reply('problem-messages', problemMessages);
+  // store.set('hasUploaded', true);
+  // store.set('problemMessages', problemMessages);
 });
 
 ipcMain.on('search-texts', async (event, arg) => {
   const found = searchAllTextsForKeyWord(arg);
   event.reply('search-results', found);
 });
+
+function uniqueBy(array, propertyName) {
+  return array.filter(
+    (e, i) => array.findIndex((a) => a[propertyName] === e[propertyName]) === i
+  );
+}
+
+const removeProblemMessagesWithWords = (words: string[]) => {
+  const messages = store.get('problemMessages');
+  const timestampsToRemove = [];
+  messages.forEach((m) => {
+    words.forEach((word) => {
+      if (
+        m.content &&
+        m.content.toLowerCase().indexOf(word.toLowerCase()) > -1
+      ) {
+        timestampsToRemove.push(m.timestamp_ms);
+      }
+    });
+  });
+  const newMessages = messages.filter(
+    (message) => !timestampsToRemove.includes(message.timestamp_ms)
+  );
+  store.set('problemMessages', newMessages);
+  return newMessages;
+};
+
+const updateProblemMessagesWithNewWords = (words: string[]) => {
+  const desktopPath = app.getPath('desktop') + '/chatcleanse_data';
+  const allFiles = walk(desktopPath);
+  const files = allFiles.filter(
+    (x) =>
+      x.includes('/messages/inbox/') &&
+      x.includes('.json') &&
+      !x.includes('secret_conversations')
+  );
+  let problemMessagesToAdd = [];
+  console.log('about to update with given words', words);
+  const username = getUserName(files);
+  files.forEach((f) => {
+    const data = JSON.parse(fs.readFileSync(f, 'utf8'));
+    for (const x in data.messages) {
+      const m = data.messages[x];
+      words.forEach((newBadWord) => {
+        if (
+          m.content &&
+          m.content.toLowerCase().indexOf(newBadWord.toLowerCase()) > -1
+        ) {
+          problemMessagesToAdd.push({
+            ...m,
+            username,
+            participants: data.participants,
+            title: data.title,
+            context: getContext(data.messages, parseInt(x)),
+            thread_path: data.thread_path,
+          });
+        }
+      });
+    }
+  });
+
+  const newProblemMessages = store
+    .get('problemMessages')
+    .concat(problemMessagesToAdd);
+  const uniqNew = uniqueBy(newProblemMessages, 'timestamp_ms');
+  console.log('NEW PROBLEM', newProblemMessages);
+  console.log('unq new', uniqNew);
+  store.set('problemMessages', uniqNew);
+
+  return uniqNew;
+};
 
 ipcMain.on('file-drop', async (event, arg) => {
   const desktopPath = app.getPath('desktop') + '/chatcleanse_data';
@@ -358,6 +470,7 @@ const createWindow = async () => {
       mainWindow.show();
     }
     // store.delete('problemMessages');
+    // store.delete('addWords');
     const problemMessages = store.get('problemMessages');
     if (problemMessages) {
       mainWindow.webContents.send('go-to-page', 'results');
