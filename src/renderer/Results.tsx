@@ -258,6 +258,8 @@ export default function Results() {
           >
             <Pagination
               count={pageCount}
+              showLastButton
+              showFirstButton
               onChange={handlePageClick}
               color="primary"
             />
