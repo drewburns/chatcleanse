@@ -8,7 +8,6 @@ import {
   useNavigate,
 } from 'react-router-dom';
 
-
 import './App.css';
 import React from 'react';
 
@@ -46,7 +45,7 @@ export default function Results() {
   const [loading, setLoading] = React.useState(false);
   const [itemOffset, setItemOffset] = React.useState(0);
 
-  const itemsPerPage = 20;
+  const itemsPerPage = 2;
   React.useEffect(() => {
     window.electron.ipcRenderer.sendMessage('getProblemMessages');
     window.electron.ipcRenderer.sendMessage('get-add-words');
@@ -191,9 +190,9 @@ export default function Results() {
   const allMessagesPaginated = allMessages.slice(itemOffset, endOffset);
 
   const handlePageClick = (event, value) => {
-    console.log('VALUE', value);
     const newOffset = ((value - 1) * itemsPerPage) % allMessages.length;
     setItemOffset(newOffset);
+    window.scrollTo(0, 0);
   };
 
   if (loading) {

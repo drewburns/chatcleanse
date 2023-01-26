@@ -47,7 +47,6 @@ ipcMain.on('getProblemMessages', async (event, arg) => {
   // console.log('resolved', resolved);
   const desktopPath = app.getPath('desktop');
   const allMessages = store.get('problemMessages');
-  console.log('GETTING PROBLEM', allMessages);
   if (!resolved) {
     return event.reply('problemMessages', {
       messages: allMessages,
@@ -348,7 +347,6 @@ const updateProblemMessagesWithNewWords = (words: string[]) => {
       !x.includes('secret_conversations')
   );
   let problemMessagesToAdd = [];
-  console.log('about to update with given words', words);
   const username = getUserName(files);
   files.forEach((f) => {
     const data = JSON.parse(fs.readFileSync(f, 'utf8'));
@@ -376,8 +374,6 @@ const updateProblemMessagesWithNewWords = (words: string[]) => {
     .get('problemMessages')
     .concat(problemMessagesToAdd);
   const uniqNew = uniqueBy(newProblemMessages, 'timestamp_ms');
-  console.log('NEW PROBLEM', newProblemMessages);
-  console.log('unq new', uniqNew);
   store.set('problemMessages', uniqNew);
 
   return uniqNew;
@@ -404,7 +400,6 @@ ipcMain.on('file-drop', async (event, arg) => {
       mainWindow.webContents.send('go-to-page', 'results');
     }
   }
-  // console.log(problemMessages);
 });
 
 if (process.env.NODE_ENV === 'production') {
