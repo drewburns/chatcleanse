@@ -24,8 +24,7 @@ export default function TopBar({
   startSearch,
   searchTerm,
 }: Props) {
-
-
+  
   const clickHandler = (button) => {
     if (button === 'omit' && isPaid === false) { return alert('Upgrade to unlock') }
     if (button === 'add' && isPaid === false) { return alert('Upgrade to unlock') }
@@ -33,8 +32,6 @@ export default function TopBar({
     if (button === 'omit') { return setShowOmitWords(true) }
     if (button === 'add') { return setShowAddWords(true) }
     if (button === 'search') {return startSearch}
-
-
   };
 
   return (
