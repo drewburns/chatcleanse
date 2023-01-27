@@ -7,6 +7,7 @@ import {
   Route,
   useNavigate,
 } from 'react-router-dom';
+import axios from 'axios';
 
 import './App.css';
 import React from 'react';
@@ -25,6 +26,7 @@ import TopBar from './components/TopBar';
 import MessageThread from './components/MessageThread';
 import WordsModal from './components/WordsModal';
 import Loading from './components/Loading';
+import PayBanner from './components/PayBanner';
 // import { Box, Card } from '@chakra-ui/react';
 
 export default function Results() {
@@ -44,10 +46,33 @@ export default function Results() {
   const [omitWords, setOmitWords] = React.useState([]);
   const [loading, setLoading] = React.useState(false);
   const [itemOffset, setItemOffset] = React.useState(0);
+  const [isPaid, setIsPaid] = React.useState(false);
 
   const itemsPerPage = 20;
+
+  const tryCode = (code: string) => {
+    console.log('enw code', code);
+    window.electron.ipcRenderer.sendMessage('set-code', code);
+    axios
+      .get('https://gist.github.com/drewburns/9bb4bb64eaa454e7a8982d16d3ef7e39')
+      .then((res) => {
+        const regex = /===.+===/;
+        const paidUsers = res.data
+          .match(regex)[0]
+          .replaceAll('===', '')
+          .split(',')
+          .filter((x) => x);
+        console.log('paid user', paidUsers);
+        setIsPaid(paidUsers.includes(code));
+      })
+      .catch(() => {
+        setIsPaid(false);
+      });
+  };
+
   React.useEffect(() => {
     window.electron.ipcRenderer.sendMessage('getProblemMessages');
+    window.electron.ipcRenderer.sendMessage('get-code');
     window.electron.ipcRenderer.sendMessage('get-add-words');
     window.electron.ipcRenderer.sendMessage('get-omit-words');
     window.electron.ipcRenderer.on('go-to-page', (page) => {
@@ -76,6 +101,10 @@ export default function Results() {
       setDesktopPath(data.desktopPath);
       setLoading(false);
       setItemOffset(0);
+    });
+
+    window.electron.ipcRenderer.on('get-code', (code) => {
+      tryCode(code);
     });
   }, []);
 
@@ -240,30 +269,34 @@ export default function Results() {
           )}
           {allMessagesPaginated.map((message) => (
             <MessageThread
+              isPaid={isPaid}
               filterUserThread={filterUserThread}
               message={message}
               resolveMessage={resolveMessage}
               desktopPath={desktopPath}
             />
           ))}
-          <div
-            style={{
-              alignContent: 'center',
-              alignItems: 'center',
-              display: 'flex',
-              justifyContent: 'center',
-              marginTop: 16,
-              marginBottom: 30,
-            }}
-          >
-            <Pagination
-              count={pageCount}
-              showLastButton
-              showFirstButton
-              onChange={handlePageClick}
-              color="primary"
-            />
-          </div>
+          {isPaid && (
+            <div
+              style={{
+                alignContent: 'center',
+                alignItems: 'center',
+                display: 'flex',
+                justifyContent: 'center',
+                marginTop: 16,
+                marginBottom: 30,
+              }}
+            >
+              <Pagination
+                count={pageCount}
+                showLastButton
+                showFirstButton
+                onChange={handlePageClick}
+                color="primary"
+              />
+            </div>
+          )}
+          {!isPaid && <PayBanner setIsPaid={setIsPaid} tryCode={tryCode} />}
         </div>
       </div>
       <Modal

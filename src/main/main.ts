@@ -256,6 +256,14 @@ ipcMain.on('get-add-words', async (event, arg) => {
   event.reply('add-words', addWords || []);
 });
 
+ipcMain.on('get-code', async (event, arg) => {
+  event.reply('get-code', store.get('accessCode') || '');
+});
+
+ipcMain.on('set-code', async (event, arg) => {
+  store.set('accessCode', arg);
+});
+
 ipcMain.on('get-omit-words', async (event, arg) => {
   const omitWords = store.get('omitWords');
   event.reply('omit-words', omitWords || []);

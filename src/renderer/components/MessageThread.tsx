@@ -4,7 +4,7 @@ type Props = {
   message: any;
   desktopPath: string;
   resolveMessage: (val: number) => void;
-  isSearch: boolean;
+  isPaid: boolean;
   displayModalOnboarding: () => void;
   filterUserThread: (val: string) => void;
 };
@@ -15,7 +15,7 @@ export default function MessageThread({
   desktopPath,
   displayModalOnboarding,
   filterUserThread,
-  isSearch,
+  isPaid,
 }: Props) {
   function unique(array, propertyName) {
     return array.filter(
@@ -63,6 +63,11 @@ export default function MessageThread({
     );
   };
 
+  const handleClick = () => {
+    if (isPaid) return resolveClicked(message.timestamp_ms);
+
+    return alert('Pay to unlock this!');
+  };
   return (
     <Card
       style={{
@@ -141,32 +146,30 @@ export default function MessageThread({
             {cm.photos && displayImages(cm.photos)}
             {cm.audio_files && displayAudio(cm.audio_files)}
           </div>
-          {cm.timestamp_ms === message.timestamp_ms && !isSearch && (
+          {cm.timestamp_ms === message.timestamp_ms && (
             <div className="problemDot" />
           )}
         </Grid>
       ))}
-      {!isSearch && (
-        <div
-          style={{
-            cursor: 'pointer',
-            display: 'flex',
-            float: 'right',
-            marginTop: 20,
-            height: 43,
-            width: 143,
-            marginRight: 20,
-            backgroundColor: 'black',
-            color: 'white',
-            borderRadius: 3,
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
-          onClick={() => resolveClicked(message.timestamp_ms)}
-        >
-          Mark Resolved
-        </div>
-      )}
+      <div
+        style={{
+          cursor: 'pointer',
+          display: 'flex',
+          float: 'right',
+          marginTop: 20,
+          height: 43,
+          width: 143,
+          marginRight: 20,
+          backgroundColor: 'black',
+          color: 'white',
+          borderRadius: 3,
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+        onClick={() => handleClick()}
+      >
+        Mark Resolved
+      </div>
     </Card>
   );
 }
