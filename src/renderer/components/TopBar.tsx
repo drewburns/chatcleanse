@@ -15,6 +15,7 @@ type Props = {
 };
 
 export default function TopBar({
+  isPaid,
   problemMessages,
   setShowAddWords,
   setShowOmitWords,
@@ -23,6 +24,19 @@ export default function TopBar({
   startSearch,
   searchTerm,
 }: Props) {
+
+
+  const clickHandler = (button) => {
+    if (button === 'omit' && isPaid === false) { return alert('Upgrade to unlock') }
+    if (button === 'add' && isPaid === false) { return alert('Upgrade to unlock') }
+    if (button === 'search' && isPaid === false) { return alert('Upgrade to unlock') }
+    if (button === 'omit') { return setShowOmitWords(true) }
+    if (button === 'add') { return setShowAddWords(true) }
+    if (button === 'search') {return startSearch}
+
+
+  };
+
   return (
     <>
       <div
@@ -52,7 +66,7 @@ export default function TopBar({
               border: '1px solid black',
               borderRadius: 5,
             }}
-            onClick={() => setShowAddWords(true)}
+            onClick={() => clickHandler('add')}
           >
             <p>Add Words</p>
           </div>
@@ -68,7 +82,7 @@ export default function TopBar({
               border: '1px solid black',
               borderRadius: 5,
             }}
-            onClick={() => setShowOmitWords(true)}
+            onClick={() => clickHandler('omit')}
           >
             <p>Omit Words</p>
           </div>
@@ -118,7 +132,7 @@ export default function TopBar({
           }}
         />
         <Button
-          onClick={startSearch}
+          onClick={() =>clickHandler('search')}
           style={{ backgroundColor: 'black', color: 'white', width: 100 }}
         >
           Search

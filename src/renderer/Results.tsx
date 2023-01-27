@@ -249,6 +249,7 @@ export default function Results() {
             setShowAddWords={setShowAddWords}
             setShowOmitWords={setShowOmitWords}
             problemMessages={problemMessages}
+            isPaid={isPaid}
           />
           {searchOn && (
             <Button
