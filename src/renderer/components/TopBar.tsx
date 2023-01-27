@@ -99,21 +99,21 @@ export default function TopBar({
           >
             <p>New Scan</p>
           </div>
-          {/* <div */}
-          {/*   style={{ */}
-          {/*     cursor: 'pointer', */}
-          {/*     height: 40, */}
-          {/*     width: 40, */}
-          {/*     borderRadius: 20, */}
-          {/*     border: '1px solid black', */}
-          {/*     marginLeft: 10, */}
-          {/*     display: 'flex', */}
-          {/*     alignItems: 'center', */}
-          {/*     justifyContent: 'center', */}
-          {/*   }} */}
-          {/* > */}
-          {/*   <PersonIcon style={{ height: 30, width: 30 }} /> */}
-          {/* </div> */}
+          <div
+            style={{
+              cursor: 'pointer',
+              height: 40,
+              width: 40,
+              borderRadius: 20,
+              border: '1px solid black',
+              marginLeft: 10,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            <PersonIcon style={{ height: 30, width: 30 }} />
+          </div>
         </div>
       </div>
       <div style={{ display: 'flex' }}>
