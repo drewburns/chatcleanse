@@ -65,8 +65,9 @@ export default function MessageThread({
   };
 
   const handleClick = () => {
+    console.log('here is function', displayModalOnboarding)
     if (!!isPaid) return alert('Pay to unlock this!');
-    if (!onboardingShown) return displayModalOnboarding();
+    if (!!onboardingShown) return displayModalOnboarding();
     return resolveClicked(message.timestamp_ms);
   };
 

@@ -127,7 +127,7 @@ export default function Results() {
   // .contains(true)
 
   const displayModalOnboarding = () => {
-    !onboardingShown && setShowMarkResolve(true);
+    setShowMarkResolve(true);
     setOnboardingShown(true);
   };
 
