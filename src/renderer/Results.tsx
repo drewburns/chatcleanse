@@ -273,6 +273,8 @@ export default function Results() {
               isPaid={isPaid}
               filterUserThread={filterUserThread}
               message={message}
+              onboardingShown={onboardingShown}
+              displayModalOnboarding={displayModalOnboarding}
               resolveMessage={resolveMessage}
               desktopPath={desktopPath}
             />
