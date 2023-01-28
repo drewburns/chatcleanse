@@ -66,7 +66,7 @@ const Hello = () => {
         </Card>
         <Card className="helloCard" style={{ textAlign: 'center' }}>
           <h3>Get started with your free message scan</h3>
-          <p>Drag in your export from Instagram</p>
+          <p>Drag in your <span style={{ fontWeight: 'bold' }}>JSON export</span> from Instagram -<a href="https://help.instagram.com/181231772500920" target="_blank" rel="noopener noreferrer">see how</a></p>
           <section>
             <div
               {...getRootProps()}
