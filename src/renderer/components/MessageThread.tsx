@@ -13,6 +13,7 @@ export default function MessageThread({
   message,
   resolveMessage,
   desktopPath,
+                                        onboardingShown,
   displayModalOnboarding,
   filterUserThread,
   isPaid,
@@ -25,7 +26,6 @@ export default function MessageThread({
   }
 
   const resolveClicked = (time) => {
-    displayModalOnboarding();
     resolveMessage(time);
   };
 
@@ -64,10 +64,11 @@ export default function MessageThread({
   };
 
   const handleClick = () => {
-    if (isPaid) return resolveClicked(message.timestamp_ms);
-
-    return alert('Pay to unlock this!');
+    if (!isPaid) return alert('Pay to unlock this!');
+    if (!onboardingShown) return displayModalOnboarding();
+    return resolveClicked(message.timestamp_ms);
   };
+
   return (
     <Card
       style={{
