@@ -23,9 +23,11 @@ export default function Loading({}: Props) {
   }, []);
 
   return (
-    <div>
-      <h3>Loading...</h3>
-      <LinearProgress />
+    <div style={{ display: 'flex', alignItems: 'center', flexDirection: 'column'}}>
+      <div style={{width: '80%', alignItems: "center"}}>
+        <h3 style={{textAlign: 'center'}}>Scanning...</h3>
+        <LinearProgress />
+      </div>
     </div>
   );
 }
