@@ -153,19 +153,19 @@ export default function TopBar({
           >
             Start a new scan
           </Typography>
-          <p style={{ maxWidth: 280 }}>Remember to export a new scan from Instagram to reflect your changes</p>
-          <Button
-            onClick={() =>setShowResetModal(false)}
-            style={{ backgroundColor: 'black', color: 'white', width: 100, marginBottom: 5 }}
-          >
-            back
-          </Button>
+          <p style={{ maxWidth: 280 }}>Remember to export from Instagram again to reflect your changes -<a href="https://help.instagram.com/181231772500920" target="_blank" rel="noopener noreferrer">See how
+          </a>
+          </p>
+
           <Button
             onClick={() => reset()}
-            style={{ backgroundColor: 'black', color: 'white', width: 100}}
+            style={{ backgroundColor: 'black', color: 'white', width: 100, marginBottom: 0, marginTop: 10}}
           >
             confirm
           </Button>
+          <p style={{ cursor: 'pointer', marginTop: 15}} onClick={() =>setShowResetModal(false)}>
+            back
+          </p>
         </Box>
       </Modal>
     </>
