@@ -5,6 +5,7 @@ type Props = {
   desktopPath: string;
   resolveMessage: (val: number) => void;
   isPaid: boolean;
+  onboardingShown: boolean;
   displayModalOnboarding: () => void;
   filterUserThread: (val: string) => void;
 };
@@ -13,7 +14,7 @@ export default function MessageThread({
   message,
   resolveMessage,
   desktopPath,
-                                        onboardingShown,
+      onboardingShown,
   displayModalOnboarding,
   filterUserThread,
   isPaid,
@@ -64,7 +65,7 @@ export default function MessageThread({
   };
 
   const handleClick = () => {
-    if (!isPaid) return alert('Pay to unlock this!');
+    if (!!isPaid) return alert('Pay to unlock this!');
     if (!onboardingShown) return displayModalOnboarding();
     return resolveClicked(message.timestamp_ms);
   };
