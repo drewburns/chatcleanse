@@ -1,8 +1,9 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
-import { TextField, Button } from '@mui/material';
+import { TextField, Button, Modal, Box, Typography } from "@mui/material";
 import PersonIcon from '@mui/icons-material/Person';
 import React from 'react';
+import WordsModal from "./WordsModal";
 
 type Props = {
   problemMessages: any[];
@@ -24,6 +25,8 @@ export default function TopBar({
   startSearch,
   searchTerm,
 }: Props) {
+
+  const [showResetModal, setShowResetModal] = React.useState(false);
 
   const clickHandler = (button) => {
     if (button === 'omit' && isPaid === false) { return alert('Upgrade to unlock') }
@@ -84,7 +87,7 @@ export default function TopBar({
             <p>Omit Words</p>
           </div>
           <div
-            onClick={() => reset()}
+            onClick={() => setShowResetModal(true)}
             style={{
               cursor: 'pointer',
               display: 'flex',
@@ -135,6 +138,50 @@ export default function TopBar({
           Search
         </Button>
       </div>
+      <Modal
+        open={showResetModal}
+        onClose={() => setShowResetModal(false)}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={style.modalStyle}>
+          <Typography
+            id="modal-modal-title"
+            variant="h6"
+            component="h2"
+            style={{ marginBottom: 15 }}
+          >
+            Start a new scan?
+          </Typography>
+
+          <Button
+            onClick={() => reset()}
+            style={{ backgroundColor: 'black', color: 'white', width: 100, marginRight: 10 }}
+          >
+            confirm
+          </Button>
+          <Button
+            onClick={() =>setShowResetModal(false)}
+            style={{ backgroundColor: 'black', color: 'white', width: 100 }}
+          >
+            back
+          </Button>
+        </Box>
+      </Modal>
     </>
   );
 }
+
+const style = {
+  modalStyle: {
+    position: 'absolute' as 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 300,
+    bgcolor: 'background.paper',
+    borderRadius: 2,
+    boxShadow: 24,
+    p: 4,
+  },
+};
