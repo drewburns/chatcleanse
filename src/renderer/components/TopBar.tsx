@@ -149,22 +149,22 @@ export default function TopBar({
             id="modal-modal-title"
             variant="h6"
             component="h2"
-            style={{ marginBottom: 15 }}
+            style={{ marginBottom: 0 }}
           >
-            Start a new scan?
+            Start a new scan
           </Typography>
-
-          <Button
-            onClick={() => reset()}
-            style={{ backgroundColor: 'black', color: 'white', width: 100, marginRight: 10 }}
-          >
-            confirm
-          </Button>
+          <p style={{ maxWidth: 280 }}>Remember to export a new scan from Instagram to reflect your changes</p>
           <Button
             onClick={() =>setShowResetModal(false)}
-            style={{ backgroundColor: 'black', color: 'white', width: 100 }}
+            style={{ backgroundColor: 'black', color: 'white', width: 100, marginBottom: 5 }}
           >
             back
+          </Button>
+          <Button
+            onClick={() => reset()}
+            style={{ backgroundColor: 'black', color: 'white', width: 100}}
+          >
+            confirm
           </Button>
         </Box>
       </Modal>
@@ -183,5 +183,9 @@ const style = {
     borderRadius: 2,
     boxShadow: 24,
     p: 4,
+    alignItems: 'center',
+    justifyContent: 'center',
+    display: 'flex',
+    flexDirection: 'column'
   },
 };
