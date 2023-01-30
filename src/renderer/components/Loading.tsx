@@ -26,6 +26,7 @@ export default function Loading({}: Props) {
     <div style={{ display: 'flex', alignItems: 'center', flexDirection: 'column'}}>
       <div style={{width: '80%', alignItems: "center"}}>
         <h3 style={{textAlign: 'center'}}>Scanning...</h3>
+        <p style={{textAlign: 'center'}}>This may take up to two minutes</p>
         <LinearProgress />
       </div>
     </div>

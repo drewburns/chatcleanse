@@ -33,16 +33,18 @@ export default function PayBanner({ setIsPaid, tryCode }: Props) {
       </Modal>
       <div
         style={{
-          backgroundColor: '#d3d3d3',
+          backgroundColor: 'white',
           width: '100%',
           height: 150,
           position: 'fixed',
           left: 0,
           bottom: 0,
-        }}
+          borderColor: '#f4f4f4',
+        borderWidth: .5
+      }}
       >
         <div style={{ textAlign: 'center' }}>
-          <h3>Want to see all your issues?</h3>
+          <h3>Subscribe to see all your issues</h3>
           <p style={{ textDecoration: 'underline', cursor: 'pointer' }}>
             Click here to subscribe
           </p>
