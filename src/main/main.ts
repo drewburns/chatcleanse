@@ -42,18 +42,50 @@ ipcMain.on('ipc-example', async (event, arg) => {
   event.reply('ipc-example', msgTemplate('pong'));
 });
 
+const sev1Words = [
+  'nigger',
+  'cum',
+  'fuck',
+  'sex',
+  'penis',
+  'pussy',
+  'cock',
+  'tits',
+  'boobs',
+  'faggot',
+  'fag',
+  'weed',
+  'blow',
+  'horny',
+];
 ipcMain.on('getProblemMessages', async (event, arg) => {
   const resolved = store.get('resolved');
   // console.log('resolved', resolved);
   const desktopPath = app.getPath('desktop');
   const allMessages = store.get('problemMessages');
+  const sev1Messages = [];
+  allMessages.forEach((message) => {
+    sev1Words.forEach((keyWord) => {
+      if (
+        message.content &&
+        message.content.toLowerCase().indexOf(keyWord.toLowerCase()) > -1
+      ) {
+        sev1Messages.push(message);
+      }
+    });
+  });
+  const orderedWithSev = sev1Messages.concat(
+    allMessages.filter(
+      (m) => !sev1Messages.map((x) => x.timestamp_ms).includes(m.timestamp_ms)
+    )
+  );
   if (!resolved) {
     return event.reply('problemMessages', {
-      messages: allMessages,
+      messages: orderedWithSev,
       desktopPath,
     });
   }
-  const filteredResolve = allMessages.filter(
+  const filteredResolve = orderedWithSev.filter(
     (m) => !resolved.includes(m.timestamp_ms)
   );
   return event.reply('problemMessages', {
