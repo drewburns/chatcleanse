@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
-import { TextField, Button, Modal, Box, Typography } from "@mui/material";
+import { InputBase, TextField, Button, Modal, Box, Typography } from "@mui/material";
 import PersonIcon from '@mui/icons-material/Person';
 import React from 'react';
 import WordsModal from "./WordsModal";
@@ -59,11 +59,12 @@ export default function TopBar({
               cursor: 'pointer',
               display: 'flex',
               width: 95,
-              height: 40,
+              height: 50,
               marginLeft: 10,
               alignItems: 'center',
               justifyContent: 'center',
-              border: '1px solid black',
+              // border: '1px solid black',
+              backgroundColor:'white',
               borderRadius: 5,
             }}
             onClick={() => clickHandler('add')}
@@ -75,11 +76,12 @@ export default function TopBar({
               cursor: 'pointer',
               display: 'flex',
               width: 95,
-              height: 40,
+              height: 50,
               marginLeft: 10,
               alignItems: 'center',
               justifyContent: 'center',
-              border: '1px solid black',
+              // border: '1px solid black',
+              backgroundColor:'white',
               borderRadius: 5,
             }}
             onClick={() => clickHandler('omit')}
@@ -92,41 +94,46 @@ export default function TopBar({
               cursor: 'pointer',
               display: 'flex',
               width: 95,
-              height: 40,
+              height: 50,
               marginLeft: 10,
               alignItems: 'center',
               justifyContent: 'center',
-              border: '1px solid black',
+              // border: '1px solid black',
+              backgroundColor:'white',
               borderRadius: 5,
             }}
           >
             <p>New Scan</p>
           </div>
-          <div
-            style={{
-              cursor: 'pointer',
-              height: 40,
-              width: 40,
-              borderRadius: 20,
-              border: '1px solid black',
-              marginLeft: 10,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-          >
-            <PersonIcon style={{ height: 30, width: 30 }} />
-          </div>
+          {/* <div */}
+          {/*   style={{ */}
+          {/*     cursor: 'pointer', */}
+          {/*     height: 40, */}
+          {/*     width: 40, */}
+          {/*     borderRadius: 20, */}
+          {/*     border: '1px solid black', */}
+          {/*     marginLeft: 10, */}
+          {/*     display: 'flex', */}
+          {/*     alignItems: 'center', */}
+          {/*     justifyContent: 'center', */}
+          {/*   }} */}
+          {/* > */}
+          {/*   /!* <PersonIcon style={{ height: 30, width: 30 }} /> *!/ */}
+          {/* </div> */}
         </div>
       </div>
       <div style={{ display: 'flex' }}>
-        <TextField
+        <InputBase
           fullWidth
           value={searchTerm}
+          style={{backgroundColor: 'white', height: 55, paddingLeft: 10}}
           onChange={(e) => setSearchTerm(e.target.value)}
           id="outlined-basic"
-          label="Search for a text"
+          placeholder="Search for text"
           variant="outlined"
+          InputProps={{
+            disableUnderline: true, // <== added this
+          }}
           onKeyUp={(event) => {
             if (event.key === 'Enter') startSearch();
           }}
