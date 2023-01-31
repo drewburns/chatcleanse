@@ -14,7 +14,7 @@ export default function MessageThread({
   message,
   resolveMessage,
   desktopPath,
-      onboardingShown,
+  onboardingShown,
   displayModalOnboarding,
   filterUserThread,
   isPaid,
@@ -65,11 +65,10 @@ export default function MessageThread({
   };
 
   const handleClick = (event, pathFunction) => {
-    console.log('here is function', displayModalOnboarding)
     if (!isPaid) return alert('Pay to unlock this!');
     if (!onboardingShown) return displayModalOnboarding();
     if (event === 'resolve') return resolveClicked(message.timestamp_ms);
-    if (event === 'see all') return () => pathFunction;
+    if (event === 'see all') return filterUserThread(message.thread_path);
   };
 
   return (
@@ -91,7 +90,7 @@ export default function MessageThread({
       >
         <div
           style={{ cursor: 'pointer' }}
-          onClick={() => handleClick('see all', filterUserThread(message.thread_path))}
+          onClick={() => handleClick('see all')}
         >
           <p
             style={{
