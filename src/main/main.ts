@@ -14,6 +14,7 @@ import path from 'path';
 
 import { app, BrowserWindow, shell, ipcMain } from 'electron';
 import { autoUpdater } from 'electron-updater';
+const shell = require('electron').shell;
 import log from 'electron-log';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
@@ -40,6 +41,11 @@ let mainWindow: BrowserWindow | null = null;
 ipcMain.on('ipc-example', async (event, arg) => {
   const msgTemplate = (pingPong: string) => `IPC test: ${pingPong}`;
   event.reply('ipc-example', msgTemplate('pong'));
+});
+
+ipcMain.on('openLink', async (event, arg) => {
+  shell.openExternal(arg);
+
 });
 
 const sev1Words = [

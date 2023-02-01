@@ -5,9 +5,8 @@ import {
   Route,
   useNavigate,
 } from 'react-router-dom';
-import icon from '../../assets/icon.svg';
 import { useDropzone } from 'react-dropzone';
-
+import icon from './icon.png';
 import './App.css';
 import React from 'react';
 import { Card, Grid, LinearProgress } from '@mui/material';
@@ -44,44 +43,89 @@ const Hello = () => {
     <Grid container>
       <Grid item xs={3} />
       <Grid item xs={6}>
-        <Card className="helloCard">
-          <h2 style={{ textAlign: 'center' }}>Chat Cleanse</h2>
-          <div>
-            <h4>Take action on old texts and more</h4>
-            <p>
-              Scan through thousands of DM's to find messages you want to delete
-            </p>
-          </div>
-          <div>
-            <h4>Paid, meaning totally private</h4>
-            <p>
-              Your data is yours. By charging to use ChatCleanse, we make sure
-              privacy is always at the forefront
-            </p>
-          </div>
-          <div>
-            <h4>Have piece of mind</h4>
-            <p>Freshen up your texts and protect your reputation</p>
-          </div>
-        </Card>
         <Card className="helloCard" style={{ textAlign: 'center' }}>
-          <h3>Get started with your free message scan</h3>
-          <p>Drag in your <span style={{ fontWeight: 'bold' }}>JSON export</span> from Instagram -<a href="https://help.instagram.com/181231772500920" target="_blank" rel="noopener noreferrer">see how</a></p>
-          <section>
+          <div style={{ marginLeft: 50, marginRight: 50 }}>
             <div
-              {...getRootProps()}
               style={{
-                height: 100,
-                border: '1px dashed black',
-                cursor: 'pointer',
+                display: 'flex',
+                justifyContent: 'center',
+                alignContent: 'center',
               }}
             >
-              <input {...getInputProps()} />
-              <p style={{ marginTop: 30, padding: 10 }}>
-                Drag your folder here!
-              </p>
+              <img
+                src={icon}
+                style={{
+                  height: 35,
+                  borderRadius: '100%',
+                  marginTop: 15,
+                  marginRight: 5,
+                }}
+                alt="logo"
+              />
+              <h2 style={{ textAlign: 'center', color: '#565656' }}>
+                Chat Cleanse
+              </h2>
+              <br />
             </div>
-          </section>
+            <h3>Start your scan</h3>
+            <div style={{ textAlign: 'left' }}>
+              <p>Export your instagram data, then drag the folder below.</p>
+              <p>
+                To see how to export, use Instagram's directions{' '}
+                <a
+                  onClick={() =>
+                    window.electron.ipcRenderer.sendMessage(
+                      'openLink',
+                      'https://help.instagram.com/181231772500920'
+                    )
+                  }
+                  style={{
+                    cursor: 'pointer',
+                    margin: 0,
+                    color: 'black',
+                    fontWeight: 'bold',
+                  }}
+                >
+                  here
+                </a>{' '}
+                and export as JSON.
+              </p>
+              <p>Remember to uncompress the file before adding below.</p>
+              <p>Chat Cleanse gives you control over your data</p>
+            </div>
+            {/* <p>
+            Drag in your <span style={{ fontWeight: 'bold' }}>JSON export</span>{' '}
+            from Instagram -
+            <a
+              href="https://help.instagram.com/181231772500920"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              see how
+            </a>
+          </p> */}
+            <section>
+              <div
+                {...getRootProps()}
+                style={{
+                  height: 150,
+                  border: '1px solid #999FE7',
+                  backgroundColor: '#F9F9F9',
+                  cursor: 'pointer',
+                  borderRadius: 10,
+                }}
+              >
+                <input {...getInputProps()} />
+                <p style={{ marginTop: 60, padding: 10, color: '#959595' }}>
+                  Drag your folder here
+                </p>
+              </div>
+            </section>
+            <p style={{ color: '#9A9A9A', fontSize: 15, marginBottom: 50 }}>
+              By using, you agree with our Terms of Service and Privacy Policy.
+              We're proud that all your data stavs local and private.
+            </p>
+          </div>
         </Card>
       </Grid>
     </Grid>
