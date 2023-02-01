@@ -40,10 +40,9 @@ const Hello = () => {
     </li>
   ));
   return (
-    <Grid container>
-      <Grid item xs={3} />
-      <Grid item xs={6}>
-        <Card className="helloCard" style={{ textAlign: 'center' }}>
+    <div style={{ display: 'flex', justifyContent: 'center', paddingTop: 60 }}>
+
+        <Card className="helloCard" style={{ textAlign: 'center', maxWidth: 400 }}>
           <div style={{ marginLeft: 50, marginRight: 50 }}>
             <div
               style={{
@@ -58,7 +57,7 @@ const Hello = () => {
                   height: 35,
                   borderRadius: '100%',
                   marginTop: 15,
-                  marginRight: 5,
+                  marginRight: 5
                 }}
                 alt="logo"
               />
@@ -68,7 +67,7 @@ const Hello = () => {
               <br />
             </div>
             <h3>Start your scan</h3>
-            <div style={{ textAlign: 'left' }}>
+            <div style={{ textAlign: 'left', marginBottom: 30 }}>
               <p>Export your instagram data, then drag the folder below.</p>
               <p>
                 To see how to export, use Instagram's directions{' '}
@@ -112,7 +111,7 @@ const Hello = () => {
                   border: '1px solid #999FE7',
                   backgroundColor: '#F9F9F9',
                   cursor: 'pointer',
-                  borderRadius: 10,
+                  borderRadius: 10
                 }}
               >
                 <input {...getInputProps()} />
@@ -122,13 +121,27 @@ const Hello = () => {
               </div>
             </section>
             <p style={{ color: '#9A9A9A', fontSize: 15, marginBottom: 50 }}>
-              By using, you agree with our Terms of Service and Privacy Policy.
-              We're proud that all your data stavs local and private.
+              By using, you agree with our {' '}
+              <a
+                onClick={() =>
+                  window.electron.ipcRenderer.sendMessage(
+                    'openLink',
+                    'https://help.instagram.com/181231772500920'
+                  )
+                }
+                style={{
+                  cursor: 'pointer',
+                  margin: 0,
+                  color: '#868484',
+                }}
+              >
+                Terms of Service and Privacy Policy
+              </a>.
+              We're proud that all your data stays local and private.
             </p>
           </div>
         </Card>
-      </Grid>
-    </Grid>
+    </div>
   );
 };
 
