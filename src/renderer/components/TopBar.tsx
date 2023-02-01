@@ -165,7 +165,7 @@ export default function TopBar({
             onClick={() => reset()}
             style={{ backgroundColor: 'black', color: 'white', width: 100, marginBottom: 0, marginTop: 10}}
           >
-            confirm
+            Got it 👍
           </Button>
           <p style={{ cursor: 'pointer', marginTop: 15, position: 'absolute', top: 5, right: 20 }} onClick={() =>setShowResetModal(false)}>
             back

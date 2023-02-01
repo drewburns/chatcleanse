@@ -353,7 +353,7 @@ export default function Results() {
           onClick={() => setShowMarkResolve(false)}
           style={{ backgroundColor: 'black', color: 'white', width: 100, marginBottom: 0, marginTop: 10}}
         >
-          Got it
+          Got it 👍
         </Button>
         <p style={{ cursor: 'pointer', marginTop: 15, position: 'absolute', top: 5, right: 20 }} onClick={() => setShowMarkResolve(false)}>
           back
