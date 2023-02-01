@@ -302,6 +302,7 @@ export default function Results() {
           {!isPaid && <PayBanner setIsPaid={setIsPaid} tryCode={tryCode} />}
         </div>
       </div>
+
       <Modal
         open={showAddWords}
         onClose={() => setShowAddWords(false)}
@@ -339,20 +340,25 @@ export default function Results() {
         aria-describedby="modal-modal-description"
       >
         <Box sx={style.modalStyle}>
-          <Typography
-            id="modal-modal-title"
-            variant="h6"
-            component="h2"
-            style={{ marginBottom: 15 }}
-          >
-            Remember to Delete Your Message
-          </Typography>
-          <div style={{ width: '100%', height: 50, padding: 10 }}>
-            <p style={{ marginBottom: 0, color: 'gray' }}>
-              Remember to delete your message on Instagram
-            </p>
-          </div>
-        </Box>
+        <Typography
+          id="modal-modal-title"
+          variant="h6"
+          component="h2"
+          style={{ marginBottom: 0 }}
+        >
+          Resolve After You Delete
+        </Typography>
+        <p style={{ maxWidth: 280 }}>Go directly to the message in Instagram. Press and hold until it displays 'delete.' Doing so will delete for both parties. Afterwards, mark as resolved.</p>
+        <Button
+          onClick={() => setShowMarkResolve(false)}
+          style={{ backgroundColor: 'black', color: 'white', width: 100, marginBottom: 0, marginTop: 10}}
+        >
+          Got it
+        </Button>
+        <p style={{ cursor: 'pointer', marginTop: 15, position: 'absolute', top: 5, right: 20 }} onClick={() => setShowMarkResolve(false)}>
+          back
+        </p>
+      </Box>
       </Modal>
     </div>
   );
@@ -364,10 +370,15 @@ const style = {
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    width: 400,
+    width: 360,
     bgcolor: 'background.paper',
     borderRadius: 2,
     boxShadow: 24,
     p: 4,
+    display: 'flex',
+    flexDirection: 'column',
+    textAlign: 'center',
+    alignItems: 'center',
+    outline: 'none',
   },
 };

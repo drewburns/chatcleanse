@@ -160,17 +160,14 @@ export default function TopBar({
           >
             Start a new scan
           </Typography>
-          <p style={{ maxWidth: 280 }}>Remember to export from Instagram again to reflect your changes -<a href="https://help.instagram.com/181231772500920" target="_blank" rel="noopener noreferrer">See how
-          </a>
-          </p>
-
+          <p style={{ maxWidth: 280 }}>Get a new export from Instagram to reflect your changes</p>
           <Button
             onClick={() => reset()}
             style={{ backgroundColor: 'black', color: 'white', width: 100, marginBottom: 0, marginTop: 10}}
           >
             confirm
           </Button>
-          <p style={{ cursor: 'pointer', marginTop: 15}} onClick={() =>setShowResetModal(false)}>
+          <p style={{ cursor: 'pointer', marginTop: 15, position: 'absolute', top: 5, right: 20 }} onClick={() =>setShowResetModal(false)}>
             back
           </p>
         </Box>
@@ -185,14 +182,15 @@ const style = {
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    width: 300,
+    width: 360,
     bgcolor: 'background.paper',
     borderRadius: 2,
     boxShadow: 24,
     p: 4,
-    alignItems: 'center',
-    justifyContent: 'center',
     display: 'flex',
-    flexDirection: 'column'
+    flexDirection: 'column',
+    textAlign: 'center',
+    alignItems: 'center',
+    outline: 'none',
   },
 };
