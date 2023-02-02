@@ -224,7 +224,7 @@ export default function Results() {
     window.scrollTo(0, 0);
   };
 
-  if (loading) {
+  if (true) {// (loading) {
     return <Loading />;
   }
   return (

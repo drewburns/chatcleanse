@@ -126,7 +126,7 @@ const Hello = () => {
                 onClick={() =>
                   window.electron.ipcRenderer.sendMessage(
                     'openLink',
-                    'https://help.instagram.com/181231772500920'
+                    'https://chatcleanse.com/tos-privacy-policy'
                   )
                 }
                 style={{
