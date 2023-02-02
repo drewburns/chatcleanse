@@ -65,7 +65,7 @@ export default function MessageThread({
   };
 
   const handleClick = (event, pathFunction) => {
-    if (!isPaid) return alert('Pay to unlock this!');
+    if (!isPaid) return alert('Upgrade to unlock');
     if (!onboardingShown) return displayModalOnboarding();
     if (event === 'resolve') return resolveClicked(message.timestamp_ms);
     if (event === 'see all') return filterUserThread(message.thread_path);
