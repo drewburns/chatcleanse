@@ -11,6 +11,10 @@ export default function PayBanner({ setIsPaid, tryCode }: Props) {
   const [userVal, setUserVal] = React.useState('');
   const [loading, setLoading] = React.useState(false);
 
+  const openInNewTab = (url) => {
+    window.open(url, '_blank', 'noreferrer');
+  };
+
   return (
     <>
       <Modal open={showModal} onClose={() => setShowModal(false)}>
@@ -45,9 +49,9 @@ export default function PayBanner({ setIsPaid, tryCode }: Props) {
       >
         <div style={{ textAlign: 'center' }}>
           <h3>Subscribe to see all your issues</h3>
-          <p style={{ textDecoration: 'underline', cursor: 'pointer' }}>
-            Click here to subscribe
-          </p>
+            <p style={{ textDecoration: 'underline', cursor: 'pointer' }} onClick={() => openInNewTab('https://buy.stripe.com/5kA9El8hc8Jk24McMN')}>
+              Click here to subscribe
+            </p>
           <p
             style={{ textDecoration: 'underline', cursor: 'pointer' }}
             onClick={() => setShowModal(true)}
@@ -66,11 +70,15 @@ const style = {
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    width: 400,
+    width: 360,
     bgcolor: 'background.paper',
-    textAlign: 'center',
     borderRadius: 2,
     boxShadow: 24,
     p: 4,
+    display: 'flex',
+    flexDirection: 'column',
+    textAlign: 'center',
+    alignItems: 'center',
+    outline: 'none',
   },
 };
