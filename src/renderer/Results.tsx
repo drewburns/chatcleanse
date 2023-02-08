@@ -233,13 +233,14 @@ export default function Results() {
         style={{
           display: 'flex',
           justifyContent: 'center',
-          backgroundColor: '#F6F6F6',
+          backgroundColor: '#F6F6F6'
         }}
       >
         <div
           style={{
             width: 680,
-          }}
+            position: 'relative'
+        }}
         >
           <TopBar
             startSearch={startSearch}
