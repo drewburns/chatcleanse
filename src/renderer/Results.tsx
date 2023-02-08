@@ -238,8 +238,7 @@ export default function Results() {
       >
         <div
           style={{
-            width: 680,
-            position: 'relative'
+            width: 680
         }}
         >
           <TopBar
