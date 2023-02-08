@@ -116,7 +116,7 @@ const Hello = () => {
               >
                 <input {...getInputProps()} />
                 <p style={{ marginTop: 60, padding: 10, color: '#959595' }}>
-                  Drag your folder here
+                  Drag your exported folder here
                 </p>
               </div>
             </section>
