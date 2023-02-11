@@ -90,7 +90,7 @@ const Hello = () => {
                 and export as JSON.
               </p>
               <p>Remember to uncompress the file before adding below.</p>
-              <p>Chat Cleanse gives you control over your data</p>
+              <p>Chat Cleanse gives you control over your data.</p>
             </div>
             {/* <p>
             Drag in your <span style={{ fontWeight: 'bold' }}>JSON export</span>{' '}
