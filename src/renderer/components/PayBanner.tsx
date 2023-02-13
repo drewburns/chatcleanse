@@ -48,8 +48,8 @@ export default function PayBanner({ setIsPaid, tryCode }: Props) {
       }}
       >
         <div style={{ textAlign: 'center' }}>
-          <h3>Subscribe to see all your issues</h3>
-            <p style={{ textDecoration: 'underline', cursor: 'pointer' }} onClick={() => openInNewTab('https://buy.stripe.com/5kA9El8hc8Jk24McMN')}>
+          <h3>Get a 5-day unlimited trial to see all your issues</h3>
+            <p style={{ textDecoration: 'underline', cursor: 'pointer' }} onClick={() => openInNewTab('https://buy.stripe.com/3cs03Lapk0cO6l29AC')}>
               Click here to subscribe
             </p>
           <p
