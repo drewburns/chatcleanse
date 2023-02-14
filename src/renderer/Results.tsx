@@ -70,6 +70,10 @@ export default function Results() {
       });
   };
 
+  const openInNewTab = (url) => {
+    window.open(url, '_blank', 'noreferrer');
+  };
+
   React.useEffect(() => {
     window.electron.ipcRenderer.sendMessage('getProblemMessages');
     window.electron.ipcRenderer.sendMessage('get-code');
@@ -355,6 +359,7 @@ export default function Results() {
         >
           Got it 👍
         </Button>
+          <p style={{ maxWidth: 280 }}>Or <span style={{ textDecoration: 'underline', cursor: 'pointer' }} onClick={() => openInNewTab("mailto:whiteglove@chatcleanse.com")}>email us</span> if you would like a fully-managed, white glove experience</p>
         <p style={{ cursor: 'pointer', marginTop: 15, position: 'absolute', top: 5, right: 20 }} onClick={() => setShowMarkResolve(false)}>
           back
         </p>
